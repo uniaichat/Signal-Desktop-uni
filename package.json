@@ -393,29 +393,29 @@
     "appId": "org.whispersystems.signal-desktop",
     "nativeRebuilder": "parallel",
     "mac": {
-  "artifactName": "${name}-mac-${arch}-${version}.${ext}",
-  "icon": "build/icons/mac/icon.icns",
-  "hardenedRuntime": false,
-  "gatekeeperAssess": false,
-  "identity": null,
-  "sign": false,
-  "strictVerify": false,
-  "publish": [
-    {
-      "provider": "generic",
-      "url": ""
-    }
-  ],
-  "target": [
-    {
-      "target": "dmg",
-      "arch": [
-        "x64",
-        "arm64"
+      "artifactName": "${name}-mac-${arch}-${version}.${ext}",
+      "icon": "build/icons/mac/icon.icns",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "identity": null,
+      "sign": false,
+      "strictVerify": false,
+      "publish": [
+        {
+          "provider": "generic",
+          "url": ""
+        }
+      ],
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
       ]
-    }
-  ]
-},
+    },
     "masDev": {
       "type": "development",
       "sign": null,
@@ -430,15 +430,7 @@
       }
     },
     "win": {
-      "signtoolOptions": {
-        "certificateSubjectName": "Signal Messenger, LLC",
-        "certificateSha1": "8D5E3CD800736C5E1FE459A1F5AA48287D4F6EC6",
-        "publisherName": "Signal Messenger, LLC",
-        "sign": "scripts/sign-windows.mjs",
-        "signingHashAlgorithms": [
-          "sha256"
-        ]
-      },
+      "signtoolOptions": null,
       "artifactName": "${name}-win-${arch}-${version}.${ext}",
       "icon": "build/icons/win/icon.ico",
       "publish": [
@@ -532,7 +524,8 @@
       "name": "sgnl-url-scheme",
       "schemes": [
         "sgnl",
-        "signalcaptcha"
+        "signalcaptcha",
+        "unisgnl"
       ]
     },
     "asar": {
