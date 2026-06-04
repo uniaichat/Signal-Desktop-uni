@@ -32,6 +32,7 @@ import {
 import type { MenuItemConstructorOptions, Settings } from 'electron';
 import { z } from 'zod';
 
+import { getAllWindowMap, getOpenParams } from '../ts/uni/uni.node.ts';
 import { packageJson } from '../ts/util/packageJson.main.ts';
 import * as GlobalErrors from './global_errors.main.ts';
 import { setup as setupCrashReports } from './crashReports.main.ts';
@@ -222,6 +223,10 @@ const defaultWebPrefs = {
     getEnvironment() !== Environment.PackagedApp ||
     !isProduction(app.getVersion()),
   spellcheck: false,
+  sandbox: false,
+  nodeIntegration: false,
+  contextIsolation: true,
+  webSecurity: false,
 };
 
 const DISABLE_IPV6 = process.argv.some(arg => arg === '--disable-ipv6');
@@ -253,54 +258,54 @@ function showWindow() {
   }
 }
 
-if (!process.mas) {
-  log.info('making app single instance');
-  const gotLock = app.requestSingleInstanceLock();
-  if (!gotLock) {
-    log.info('quitting; we are the second instance');
-    app.exit();
-  } else {
-    app.on('second-instance', (_e: Electron.Event, argv: Array<string>) => {
-      // Workaround to let AllowSetForegroundWindow succeed.
-      // See https://www.npmjs.com/package/@signalapp/windows-dummy-keystroke for a full explanation of why this is needed.
-      if (OS.isWindows()) {
-        sendDummyKeystroke();
-      }
+// if (!process.mas) {
+//   log.info('making app single instance');
+//   const gotLock = app.requestSingleInstanceLock();
+//   if (!gotLock) {
+//     log.info('quitting; we are the second instance');
+//     app.exit();
+//   } else {
+//     app.on('second-instance', (_e: Electron.Event, argv: Array<string>) => {
+//       // Workaround to let AllowSetForegroundWindow succeed.
+//       // See https://www.npmjs.com/package/@signalapp/windows-dummy-keystroke for a full explanation of why this is needed.
+//       if (OS.isWindows()) {
+//         sendDummyKeystroke();
+//       }
 
-      // Someone tried to run a second instance, we should focus our window
-      if (mainWindow) {
-        if (mainWindow.isMinimized()) {
-          mainWindow.restore();
-        }
+//       // Someone tried to run a second instance, we should focus our window
+//       if (mainWindow) {
+//         if (mainWindow.isMinimized()) {
+//           mainWindow.restore();
+//         }
 
-        showWindow();
-      }
+//         showWindow();
+//       }
 
-      const route = maybeGetIncomingSignalRoute(argv);
-      if (route != null) {
-        handleSignalRoute(route);
-      }
-      return true;
-    });
+//       const route = maybeGetIncomingSignalRoute(argv);
+//       if (route != null) {
+//         handleSignalRoute(route);
+//       }
+//       return true;
+//     });
 
-    // This event is received in macOS packaged builds.
-    app.on('open-url', (event, incomingHref) => {
-      event.preventDefault();
-      const route = parseSignalRoute(incomingHref);
+//     // This event is received in macOS packaged builds.
+//     app.on('open-url', (event, incomingHref) => {
+//       event.preventDefault();
+//       const route = parseSignalRoute(incomingHref);
 
-      if (route != null) {
-        // When the app isn't open and you click a signal link to open the app, then
-        // this event will emit before mainWindow is ready. We save the value for later.
-        if (mainWindow == null || !mainWindow.webContents) {
-          macInitialOpenUrlRoute = route;
-          return;
-        }
+//       if (route != null) {
+//         // When the app isn't open and you click a signal link to open the app, then
+//         // this event will emit before mainWindow is ready. We save the value for later.
+//         if (mainWindow == null || !mainWindow.webContents) {
+//           macInitialOpenUrlRoute = route;
+//           return;
+//         }
 
-        handleSignalRoute(route);
-      }
-    });
-  }
-}
+//         handleSignalRoute(route);
+//       }
+//     });
+//   }
+// }
 
 let sqlInitTimeStart = 0;
 let sqlInitTimeEnd = 0;
@@ -1048,6 +1053,18 @@ async function createWindow() {
       : prepareFileUrl([rootDir, 'background.html'])
   );
 }
+
+  const openParams:any = getOpenParams()
+  log.info(openParams, getAllWindowMap(),'-------------------------------++++++++++++++++++++++++++-------')
+  if(openParams?.windowId){
+    getAllWindowMap().set(openParams.windowId, mainWindow)
+  }
+  if(openParams?.windowName){
+    mainWindow?.setTitle('unichatSiganl' + '-' + openParams.windowName)
+  }else{
+    mainWindow?.setTitle('unichatSiganl')
+  }
+  log.info(openParams, getAllWindowMap(),'--------------------------------------')
 
 // Renderer asks if we are done with the database
 ipc.handle('database-ready', async () => {
@@ -2678,6 +2695,16 @@ if (!app.isDefaultProtocolClient('signalcaptcha')) {
     'signal is already registered as the default app for the sgnl url scheme.'
   );
 }
+if (!app.isDefaultProtocolClient('unisgnl')) {
+  log.info(
+    'setting signal as the default app for the unisgnl url scheme'
+  );
+  app.setAsDefaultProtocolClient('unisgnl');
+} else {
+  log.info(
+    'signal is already registered as the default app for the sgnl url scheme.'
+  );
+}
 
 ipc.on(
   'set-badge',
@@ -2876,9 +2903,10 @@ ipc.on('get-config', async event => {
       )}`
     );
   }
-
+  const openParams = getOpenParams()
   const parsed = safeParseLoose(rendererConfigSchema, {
     name: packageJson.productName,
+    windowName : openParams?.channel ? `${openParams?.channel}Siganl-${openParams?.windowName}-8.12.1` : packageJson.productName,
     availableLocales: getResolvedMessagesLocale().availableLocales,
     resolvedTranslationsLocale: getResolvedMessagesLocale().name,
     resolvedTranslationsLocaleDirection: getResolvedMessagesLocale().direction,

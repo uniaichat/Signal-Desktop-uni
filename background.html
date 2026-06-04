@@ -23,7 +23,7 @@
             img-src 'self' blob: data: emoji: attachment:;
             media-src 'self' blob: attachment:;
             object-src 'none';
-            script-src 'self' 'sha256-Qu05oqDmBO5fZacm7tr/oerJcqsW0G/XqP4PRCziovc=' 'sha256-eLeGwSfPmXJ+EUiLfIeXABvLiUqDbiKgNLpHITaabgQ=';
+            script-src 'self' 'nonce-123456' 'sha256-Qu05oqDmBO5fZacm7tr/oerJcqsW0G/XqP4PRCziovc=' 'sha256-eLeGwSfPmXJ+EUiLfIeXABvLiUqDbiKgNLpHITaabgQ=';           
             style-src 'self' 'unsafe-inline';"
     />
     <title>Signal</title>
@@ -123,8 +123,9 @@
     Note: this inline script cannot be changed without also changing the hash in
     the CSP at the top of this file
     -->
-    <script type="text/javascript">
+    <script type="text/javascript" nonce="123456">
       window.startApp();
+      window.initUniWeb();
     </script>
   </body>
 </html>

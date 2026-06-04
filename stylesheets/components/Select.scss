@@ -60,4 +60,19 @@
       );
     }
   }
+  
+  &.uni-min-select{
+    select{
+      height: 21px;
+      line-height: 21px;
+      padding: 0 5px;
+      font-size: 12px;
+      width: 60px;
+      min-width: 60px;
+    }
+    &::after{
+      top: 2px;      
+    }
+  }
+
 }

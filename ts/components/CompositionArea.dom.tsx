@@ -91,6 +91,9 @@ import { hasDraft } from '../util/hasDraft.std.ts';
 import type { ContactNameColorType } from '../types/Colors.std.ts';
 import type { Emoji } from '../axo/emoji.std.ts';
 import { AxoConfirmDialog } from '../axo/AxoConfirmDialog.dom.tsx';
+import { UniTranslateSettingBar } from '../uni/components/UniTranslateSettingBar.tsx';
+import { uniHttpApi, uniUtils } from '../uni/uni.web.utls.ts';
+import { uniStore } from '../uni/uni.store.ts';
 
 export type OwnProps = Readonly<{
   acceptedMessageRequest: boolean | null;
@@ -404,6 +407,7 @@ export const CompositionArea = memo(function CompositionArea({
       bodyRanges: DraftBodyRanges,
       timestamp: number
     ): boolean => {
+      setReverseTranslateText('')
       if (!canSend) {
         return false;
       }
@@ -1125,6 +1129,19 @@ export const CompositionArea = memo(function CompositionArea({
       return renderSmartCompositionRecordingDraft({ voiceNoteAttachment });
     }
   }
+  const [reverseTranslateText, setReverseTranslateText] = useState('');
+  const handleReverseTranslation = async (text:any)=>{
+      const globalConfig = uniStore.getState().translateConfigGlobal
+      if(globalConfig.reverseTranslation){
+        setReverseTranslateText('翻译中...')
+        const toCode = uniUtils.getLangCodeByChannel(globalConfig.formLang, globalConfig.curChannel)
+        const result = await uniHttpApi.translate({to:toCode, channel:globalConfig.curChannel, text})
+        if(result.code === 200){
+            setReverseTranslateText(result.data)
+        }
+
+      }
+  }
 
   return (
     <div className="CompositionArea">
@@ -1305,6 +1322,7 @@ export const CompositionArea = memo(function CompositionArea({
             showViewOnceButton={showViewOnceToggle}
             isViewOnceActive={isViewOnceActive}
             onToggleViewOnce={handleToggleViewOnce}
+            onTranslateSuccess={handleReverseTranslation}
           />
         </div>
         {isViewOnceActive && (
@@ -1365,6 +1383,32 @@ export const CompositionArea = memo(function CompositionArea({
           onSendPoll={handleSendPoll}
         />
       )}
+      
+    {uniStore.getState().translateConfigGlobal.reverseTranslation &&
+      reverseTranslateText && (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            maxHeight:'30px',
+            padding:'5px 20px',
+            background:'rgba(0,0,0,0.05)'
+          }}
+        >
+          <p style={{ margin: 0 }}>
+            <label>反译：</label>
+            <span>{reverseTranslateText}</span>
+          </p>
+          <small
+            style={{ cursor: 'pointer' }}
+            onClick={() => setReverseTranslateText('')}
+          >
+            关闭
+          </small>
+        </div>
+      )}
+    <UniTranslateSettingBar chatId={conversationId} key={conversationId}/>
     </div>
   );
 });
