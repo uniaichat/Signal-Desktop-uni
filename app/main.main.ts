@@ -1217,7 +1217,7 @@ async function forceUpdate() {
 ipc.once('ready-for-updates', readyForUpdates);
 
 const TEN_MINUTES = 10 * 60 * 1000;
-setTimeout(readyForUpdates, TEN_MINUTES);
+// setTimeout(readyForUpdates, TEN_MINUTES);
 
 function openContactUs() {
   drop(shell.openExternal(createSupportUrl({ locale: app.getLocale() })));
