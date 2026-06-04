@@ -393,70 +393,29 @@
     "appId": "org.whispersystems.signal-desktop",
     "nativeRebuilder": "parallel",
     "mac": {
-      "artifactName": "${name}-mac-${arch}-${version}.${ext}",
-      "category": "public.app-category.social-networking",
-      "darkModeSupport": true,
-      "hardenedRuntime": true,
-      "entitlements": "./build/entitlements.mac.plist",
-      "entitlementsInherit": "./build/entitlements.mac.inherit.plist",
-      "icon": "build/icons/mac/icon.icns",
-      "publish": [
-        {
-          "provider": "generic",
-          "url": "https://updates.signal.org/desktop"
-        }
-      ],
-      "mergeASARs": true,
-      "sign": "scripts/sign-macos.mjs",
-      "releaseInfo": {
-        "vendor": {
-          "minOSVersion": "21.0.1"
-        }
-      },
-      "singleArchFiles": "node_modules/@signalapp/{libsignal-client/prebuilds/**,ringrtc/build/**,sqlcipher/prebuilds/**}",
-      "target": [
-        {
-          "target": "zip",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        },
-        {
-          "target": "dmg",
-          "arch": [
-            "universal"
-          ]
-        }
-      ],
-      "bundleVersion": "1",
-      "extendInfo": {
-        "NSAutoFillRequiresTextContentTypeForOneTimeCodeOnMac": true
-      }
-    },
-    "dmg": {
-      "title": "${productName} Installer",
-      "background": "build/dmg/background.tiff",
-      "icon": "build/dmg/icon.icns",
-      "iconSize": 96,
-      "window": {
-        "width": 540,
-        "height": 394
-      },
-      "contents": [
-        {
-          "type": "file",
-          "x": 152,
-          "y": 161
-        },
-        {
-          "path": "/Applications",
-          "type": "link",
-          "x": 368,
-          "y": 161
-        }
+  "artifactName": "${name}-mac-${arch}-${version}.${ext}",
+  "icon": "build/icons/mac/icon.icns",
+  "hardenedRuntime": false,
+  "gatekeeperAssess": false,
+  "identity": null,
+  "sign": false,
+  "strictVerify": false,
+  "publish": [
+    {
+      "provider": "generic",
+      "url": ""
+    }
+  ],
+  "target": [
+    {
+      "target": "dmg",
+      "arch": [
+        "x64",
+        "arm64"
       ]
-    },
+    }
+  ]
+},
     "masDev": {
       "type": "development",
       "sign": null,
@@ -576,10 +535,6 @@
         "signalcaptcha"
       ]
     },
-    "artifactBuildCompleted": "scripts/artifact-build-completed.mjs",
-    "afterSign": "scripts/after-sign.mjs",
-    "afterPack": "scripts/after-pack.mjs",
-    "afterAllArtifactBuild": "scripts/after-all-artifact-build.mjs",
     "asar": {
       "smartUnpack": false
     },

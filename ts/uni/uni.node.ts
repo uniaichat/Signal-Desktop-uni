@@ -25,21 +25,21 @@ const _initUniApp = () => {
             try {
                 const url = new URL(arg);
                 log.info('url----------------------->',url)
-                // const windowId = url.searchParams.get('windowId');
-                // const token = url.searchParams.get('token');
-                // const channel = url.searchParams.get('ch');
-                // log.info('channel----------------------->',channel)
-                // const windowName = url.searchParams.get('windowName'); 
-                // const type = url.searchParams.get('type');  
+                const windowId = url.searchParams.get('windowId');
+                const token = url.searchParams.get('token');
+                const channel = url.searchParams.get('ch');
+                log.info('channel----------------------->',channel)
+                const windowName = url.searchParams.get('windowName'); 
+                const type = url.searchParams.get('type');  
                 
                 // const token = '6B7B898D918C3C7AEA2F993F555BBC8F';
                 // const channel = 'happy';
                 
-                const windowId = '11102';
-                const channel = 'uni';
-                const token = 'eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6IjJmNzcyMWZiLTBjZWEtNDVlYS05YzVlLWZlMzE5MTk0NmViMyJ9.YodCkxzmRqxZ9qy76InhK6RHi5Ko4DYBd7zYIoTi4qOJFF_ibpQ7mRkT1TibIaheLdAiiDdE1xCBFxAi1kmlwg';
-                const windowName = '开发测试';
-                const type = 'add'
+                // const windowId = '11102';
+                // const channel = 'uni';
+                // const token = 'eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6IjJmNzcyMWZiLTBjZWEtNDVlYS05YzVlLWZlMzE5MTk0NmViMyJ9.YodCkxzmRqxZ9qy76InhK6RHi5Ko4DYBd7zYIoTi4qOJFF_ibpQ7mRkT1TibIaheLdAiiDdE1xCBFxAi1kmlwg';
+                // const windowName = '开发测试';
+                // const type = 'add'
                 
                 return windowId ? { windowId, token, windowName,type,channel } : null;
             } catch {
