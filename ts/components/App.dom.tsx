@@ -12,6 +12,7 @@ import { ThemeType } from '../types/Util.std.ts';
 
 import type { ViewStoryActionCreatorType } from '../state/ducks/stories.preload.ts';
 import type { AppStateType } from '../state/ducks/app.preload.ts';
+import { SpkToastManager } from '../spk/components/spkToast.tsx';
 
 type PropsType = {
   state: AppStateType;
@@ -117,6 +118,7 @@ export function App({
       {renderLightbox()}
       {hasSelectedStoryData &&
         renderStoryViewer(() => viewStory({ closeViewer: true }))}
+        <SpkToastManager/>
     </div>
   );
 }

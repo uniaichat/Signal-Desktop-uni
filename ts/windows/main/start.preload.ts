@@ -143,7 +143,8 @@ if (window.SignalContext.config.ciMode === 'full') {
   contextBridge.exposeInMainWorld('SignalCI', window.SignalCI);
 }
 
-if (getEnvironment() !== Environment.Test) {
-  contextBridge.exposeInMainWorld('showDebugLog', window.IPC.showDebugLog);
-  contextBridge.exposeInMainWorld('startApp', window.startApp);
-}
+contextBridge.exposeInMainWorld('showDebugLog', window.IPC.showDebugLog);
+contextBridge.exposeInMainWorld('startApp', window.startApp);
+contextBridge.exposeInMainWorld('spkIpc', window.spkIpc);
+contextBridge.exposeInMainWorld('initSpkWeb', window.initSpkWeb);
+contextBridge.exposeInMainWorld('spkStore', window.spkStore);

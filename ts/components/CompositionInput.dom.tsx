@@ -96,6 +96,10 @@ import { AxoSymbol } from '../axo/AxoSymbol.dom.tsx';
 import { AxoTooltip } from '../axo/AxoTooltip.dom.tsx';
 import { tw } from '../axo/tw.dom.tsx';
 import type { Emoji } from '../axo/emoji.std.ts';
+import { spkStore } from '../spk/spk.store.ts';
+import { spkHttpApi, spkUtils } from '../spk/spk.web.utls.ts';
+
+
 
 const log = createLogger('CompositionInput');
 
@@ -363,7 +367,56 @@ export function CompositionInput(props: Props): ReactElement {
     []
   );
 
-  const submit = useCallback(() => {
+  // const submit = React.useCallback(() => {
+  //   canSendRef.current = true;
+  //   quill.setContents(delta);
+  //   if (cursorToEnd) {
+  //     quill.setSelection(quill.getLength(), 0);
+  //   }
+  // };
+  
+  const [curChat, setCurChat] = useState(spkStore.getState().curChat)
+  const [spkLoginUser, setSpkLoginUser] = useState(spkStore.getState().userInfo)
+  const setSpkInfo = ()=>{
+      const state = spkStore.getState()
+      const chat = state.curChat;
+      const langMap = state.langMap;
+      const loginUser = state.userInfo;
+      setSpkLoginUser(loginUser)
+      setCurChat(chat);
+      console.log('setSpkInfosetSpkInfosetSpkInfosetSpkInfosetSpkInfo',loginUser)
+      const quill = quillRef.current;
+      if (quill && loginUser.id) {
+        quill.root.dataset.placeholder = chat?.sendTranslate ? `消息将翻译成【${langMap[chat.toLang]?.name}】，再次回车发送` : '发送翻译已关闭，消息将直接发送';
+      }
+
+  }
+  useEffect(()=>{
+    const unsubscribe = spkStore.subscribe(() => {
+      setSpkInfo()
+    });
+    setSpkInfo()
+    const handler = (text: string) => {
+      const quill = quillRef.current;
+      if (!quill) {
+        return;
+      }
+      quill.setText(text);
+      quill.setSelection(quill.getLength(), 0); // 光标移到末尾，可选
+    };
+    (window as any).spkSetCompositionText = handler;
+
+    // 组件卸载时清理一下
+    return () => {
+      if ((window as any).spkSetCompositionText === handler) {
+        delete (window as any).spkSetCompositionText;
+      }
+    };
+
+    return () => unsubscribe();
+  },[])
+
+  const submit = useCallback(async () => {
     const timestamp = Date.now();
     const quill = quillRef.current;
 
@@ -377,6 +430,25 @@ export function CompositionInput(props: Props): ReactElement {
     }
 
     const { text, bodyRanges } = getTextAndRanges();
+     if(spkLoginUser.id){
+      const loadingTxt = '正在翻译中...'
+      const toLang = curChat.toLang
+      if(text === loadingTxt){
+        return
+      }
+      if(text && spkUtils.sendMessageVerifyLang(toLang, text) && curChat.sendTranslate){
+        quill.setText(loadingTxt);
+        const result = await spkHttpApi.translate({to:toLang, text})
+        if(result.code === 0){
+          const translation = result.data.result.translation[0]
+          quill.setText(translation);
+          window.spkIpc.setTranslateCache({to:toLang,text,translation})
+        }
+        return
+
+      }
+
+    }
 
     log.info(
       `Submitting message ${timestamp} with ${bodyRanges.length} ranges`

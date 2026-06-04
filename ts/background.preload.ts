@@ -295,6 +295,8 @@ import { MessageCache } from './services/MessageCache.preload.ts';
 import { saveAndNotify } from './messages/saveAndNotify.preload.ts';
 import { getBackupKeyHash } from './services/backups/crypto.preload.ts';
 import { Emoji } from './axo/emoji.std.ts';
+import  './spk/spk.preload.ts';
+import  './spk/spk.web.ts';
 
 const { isNumber, throttle } = lodash;
 

@@ -194,6 +194,13 @@ declare global {
     reduxActions: ReduxActions;
     reduxStore: Store<StateType>;
 
+    
+    // spk
+    spkStore: Store<StateType>;
+    spkIpc:any;
+    initSpkWeb:()=> void;
+    baseServer:()=> void;
+
     // Feature Flags
     Flags: FeatureFlagType;
 

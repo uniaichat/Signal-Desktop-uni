@@ -14,6 +14,7 @@ let initialized = false;
 let updater: Updater | undefined;
 
 export async function start(options: UpdaterOptionsType): Promise<void> {
+  return
   const { platform } = process;
   const { logger } = options;
 
@@ -52,6 +53,7 @@ export async function start(options: UpdaterOptionsType): Promise<void> {
 }
 
 export async function force(): Promise<void> {
+  return
   if (!initialized) {
     throw new Error("updater/force: Updates haven't been initialized!");
   }
@@ -62,11 +64,13 @@ export async function force(): Promise<void> {
 }
 
 export function onRestartCanceled(): void {
+  return
   if (updater) {
     updater.onRestartCanceled();
   }
 }
 
 function autoUpdateDisabled() {
+  return false
   return !app.isPackaged || process.mas || !config.get('updatesEnabled');
 }

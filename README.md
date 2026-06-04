@@ -42,3 +42,30 @@ The form and manner of this distribution makes it eligible for export under the 
 Copyright 2013-2024 Signal Messenger, LLC
 
 Licensed under the GNU AGPLv3: https://www.gnu.org/licenses/agpl-3.0.html
+
+
+node 版本：
+24.15.0 (Currently using 64-bit executable)
+
+set VCTargetsPath=C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\
+set GYP_MSVS_VERSION=2022
+set npm_config_arch=x64
+
+pnpm run generate
+pnpm run build-win32-all
+
+### 打包的时候安装版本一定不能比当前打包版本高
+
+不然会报这个错
+[build:release-win32-all]   ⨯ Cannot cleanup: 
+[build:release-win32-all] 
+[build:release-win32-all] Error #1 --------------------------------------------------------------------------------
+[build:release-win32-all] Error: Exit code: 2. Command failed: E:\work\sp\git_work\Signal-Desktop\release\signal-desktop-win-x64-8.0.3.exe
+[build:release-win32-all] 
+[build:release-win32-all]     at E:\work\sp\git_work\Signal-Desktop\node_modules\.pnpm\builder-util@26.0.13\node_modules\builder-util\src\util.ts:142:18
+[build:release-win32-all]     at ChildProcess.exithandler (node:child_process:424:5)
+[build:release-win32-all]     at ChildProcess.emit (node:events:508:28)
+[build:release-win32-all]     at maybeClose (node:internal/child_process:1101:16)
+[build:release-win32-all]     at Socket.<anonymous> (node:internal/child_process:457:11)
+[build:release-win32-all]     at Socket.emit (node:events:508:28)
+[build:release-win32-all]     at Pipe.<anonymous> (node:net:346:12)

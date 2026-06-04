@@ -25,6 +25,7 @@ import { useComputePeaks } from '../../hooks/useComputePeaks.dom.ts';
 import { durationToPlaybackText } from '../../util/durationToPlaybackText.std.ts';
 import { shouldNeverBeCalled } from '../../util/shouldNeverBeCalled.std.ts';
 import { formatFileSize } from '../../util/formatFileSize.std.ts';
+import { SpkTranslateMessageAudio } from '../../spk/components/SpkTranslateMessageAudio.ts';
 
 const { noop } = lodash;
 
@@ -412,6 +413,7 @@ export function MessageAudio(props: Props): JSX.Element {
         {waveform}
       </div>
       {metadata}
+      {/* <SpkTranslateMessageAudio url={audioUrl} direction={direction} /> */}
     </div>
   );
 }

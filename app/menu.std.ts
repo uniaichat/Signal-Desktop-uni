@@ -217,6 +217,10 @@ export const createTemplate = (
         },
       ],
     },
+    {
+      label: '8.13.0',
+      role: 'window',
+    },
   ];
 
   if (includeSetup) {

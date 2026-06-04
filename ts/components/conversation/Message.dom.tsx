@@ -1,6 +1,8 @@
 // Copyright 2018 Signal Messenger, LLC
 // SPDX-License-Identifier: AGPL-3.0-only
 
+/* eslint-disable react/jsx-pascal-case */
+
 import type {
   DetailedHTMLProps,
   HTMLAttributes,
@@ -124,6 +126,8 @@ import type { MemberLabelType } from '../../types/GroupMemberLabels.std.ts';
 import type { ContactModalStateType } from '../../types/globalModals.std.ts';
 import { tw } from '../../axo/tw.dom.tsx';
 import { Emoji } from '../../axo/emoji.std.ts';
+import { SpkTranslateMessage } from '../../spk/components/SpkTranslateMessage.dom.tsx';
+import { spkStore } from '../../spk/spk.store.ts';
 
 const { drop, take, unescape } = lodash;
 
@@ -2500,6 +2504,7 @@ export class Message extends PureComponent<Props, State> {
             textAttachment={textAttachment}
           />
         )}
+        {spkStore.getState()?.userInfo?.id && <SpkTranslateMessage text={text} direction={direction}/>}
         {this.#getMetadataPlacement() === MetadataPlacement.InlineWithText && (
           <MessageTextMetadataSpacer metadataWidth={metadataWidth} />
         )}
@@ -3312,7 +3317,7 @@ export class Message extends PureComponent<Props, State> {
       contact;
 
     const containerClassnames = classNames(
-      'module-message__container',
+      'module-message__container !overflow-visible',
       isGIF(attachments) && !isTapToView
         ? 'module-message__container--gif'
         : null,
