@@ -8,6 +8,7 @@ import * as Errors from '../ts/types/errors.std.ts';
 import { redactAll } from '../ts/util/privacy.node.ts';
 import { createLogger } from '../ts/logging/log.std.ts';
 import { reallyJsonStringify } from '../ts/util/reallyJsonStringify.std.ts';
+import { getIsUniDeleteQuitting } from '../ts/uni/uni.node.ts';
 import type { LocaleType } from './locale.node.ts';
 
 const log = createLogger('global_errors');
@@ -16,7 +17,27 @@ const log = createLogger('global_errors');
 let quitText = 'Quit';
 let copyErrorAndQuitText = 'Copy error and quit';
 
+function shouldIgnoreErrorDuringUniDeleteQuit(error: Error): boolean {
+  if (!getIsUniDeleteQuitting()) {
+    return false;
+  }
+
+  const message = `${error.name}: ${error.message}`;
+  const code = (error as NodeJS.ErrnoException).code;
+
+  return code === 'ECONNRESET' || message.includes('ECONNRESET');
+}
+
 function handleError(prefix: string, error: Error): void {
+  if (shouldIgnoreErrorDuringUniDeleteQuit(error)) {
+    log.warn(
+      'Ignored error during uni delete quit',
+      prefix,
+      Errors.toLogFormat(error)
+    );
+    return;
+  }
+
   const formattedError = Errors.toLogFormat(error);
   // oxlint-disable-next-line no-console
   console.error(`${prefix}:`, formattedError);

@@ -2174,14 +2174,6 @@ app.on('ready', async () => {
     systemTraySettingCache.set(newValue);
 
     ephemeralConfig.set('system-tray-setting', newValue);
-
-    if (OS.isWindows()) {
-      log.info('app.ready: enabling open at login');
-      app.setLoginItemSettings({
-        ...(await getDefaultLoginItemSettings()),
-        openAtLogin: true,
-      });
-    }
   }
 
   const startTime = Date.now();

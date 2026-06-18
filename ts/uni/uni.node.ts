@@ -20,9 +20,19 @@ type OpenParams = {
 
 let openParams: OpenParams | undefined;
 let allWindowMap = new Map();
+let isUniDeleteQuitting = false;
 
 export const getOpenParams = () => openParams;
 export const getAllWindowMap = () => allWindowMap;
+export const getIsUniDeleteQuitting = () => isUniDeleteQuitting;
+
+const isDeleteRoute = (params?: OpenParams | null) => params?.type === 'del';
+
+const quitCurrentUniInstance = (reason: string, params?: OpenParams | null) => {
+  log.info('Quit current uni instance', reason, params);
+  isUniDeleteQuitting = true;
+  app.quit();
+};
 
 // `unisgnl://...` 是我们自定义的多开启动协议。
 // 这里单独解析，不走 Signal 内置路由，是因为它携带了 `windowId`
@@ -139,17 +149,6 @@ const launchMacInstanceWithRoute = (incomingHref: string) => {
   return true;
 };
 
-const markDeleteFlagIfNeeded = (params?: OpenParams) => {
-  if (params?.type !== 'del') {
-    return;
-  }
-
-  const delFile = join(app.getPath('userData'), 'del.flag');
-  if (!existsSync(delFile)) {
-    writeFileSync(delFile, String(Date.now()));
-  }
-};
-
 const _initUniApp = () => {
   if (!(app && app.getPath)) {
     return;
@@ -170,7 +169,13 @@ const _initUniApp = () => {
     if (!app.isReady() && !openParams?.windowId) {
       openParams = params;
       ensureProfileUserData(params);
-      markDeleteFlagIfNeeded(params);
+      return;
+    }
+
+    // 如果当前实例就是目标 profile，`type=del` 应该由目标实例自己退出，
+    // 而不是再走聚焦或重新拉起流程。
+    if (isDeleteRoute(params) && openParams?.windowId === params.windowId) {
+      quitCurrentUniInstance('open-url delete route', params);
       return;
     }
 
@@ -191,7 +196,6 @@ const _initUniApp = () => {
 
   openParams = maybeGetIncomingSignalRouteUni(process.argv) ?? openParams;
   ensureProfileUserData(openParams);
-  markDeleteFlagIfNeeded(openParams);
 
   // 不带自定义协议参数时，保持原来的启动逻辑，不参与 profile 多开控制。
   if (!openParams?.windowId) {
@@ -213,8 +217,21 @@ const _initUniApp = () => {
       return;
     }
 
+    // 同一个 profile 的删除指令会送达到已运行实例，这里直接退出目标实例。
+    if (isDeleteRoute(params) && openParams?.windowId === params.windowId) {
+      quitCurrentUniInstance('second-instance delete route', params);
+      return;
+    }
+
     focusWindowByParams(params);
   });
+
+  // `type=del` 且当前进程成功拿到锁，说明目标 profile 当前并没有运行。
+  // 这时不应该正常打开 Signal，而是静默退出。
+  if (isDeleteRoute(openParams)) {
+    quitCurrentUniInstance('delete route without running target instance', openParams);
+    return;
+  }
 
   // 这里额外加了一层心跳锁文件，也放在当前 profile 目录里，
   // 作为自定义多开流程的补充保护，避免同一 profile 被意外重复启动。

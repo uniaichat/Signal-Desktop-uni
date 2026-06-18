@@ -1,5 +1,4 @@
-
-import React, { useEffect, useState } from 'react';
+import React, { JSX, useEffect, useState } from 'react';
 import { uniStore } from '../uni.store';
 import { uniUtils } from '../uni.web.utls';
 import { AxoSymbol } from '../../axo/AxoSymbol.dom';
@@ -18,7 +17,7 @@ const styleName = {
     buttonSend: tw(`rounded-sm px-1 font-medium [font-size:12px] bg-[var(--font-s-color)] text-[var(--inver-s-color)] cursor-pointer mx-0.5 `),
     refresh: tw('cursor-pointer mx-1')
 }
-export function UniTranslateMessage({ direction, text }: UniTranslateMessageProps): Element {
+export function UniTranslateMessage({ direction, text }: UniTranslateMessageProps): JSX.Element {
     const [storeGlobalCon, setStoreGlobalCon] = useState(uniStore.getState().translateConfigGlobal)
     const [curChat, setCurChat] = useState(uniStore.getState().curChat)
     const [tranLoading, setTranLoading] = useState(false)

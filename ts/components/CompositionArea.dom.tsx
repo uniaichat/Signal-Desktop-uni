@@ -945,6 +945,20 @@ export const CompositionArea = memo(function CompositionArea({
   ]);
 
   useEscapeHandling(handleEscape);
+  
+  const [reverseTranslateText, setReverseTranslateText] = useState('');
+  const handleReverseTranslation = async (text:any)=>{
+      const globalConfig = uniStore.getState().translateConfigGlobal
+      if(globalConfig.reverseTranslation){
+        setReverseTranslateText('翻译中...')
+        const toCode = uniUtils.getLangCodeByChannel(globalConfig.formLang, globalConfig.curChannel)
+        const result = await uniHttpApi.translate({to:toCode, channel:globalConfig.curChannel, text})
+        if(result.code === 200){
+            setReverseTranslateText(result.data)
+        }
+
+      }
+  }
 
   if (selectedMessageIds != null) {
     return (
@@ -1128,19 +1142,6 @@ export const CompositionArea = memo(function CompositionArea({
     if (!voiceNoteAttachment.pending && voiceNoteAttachment.url) {
       return renderSmartCompositionRecordingDraft({ voiceNoteAttachment });
     }
-  }
-  const [reverseTranslateText, setReverseTranslateText] = useState('');
-  const handleReverseTranslation = async (text:any)=>{
-      const globalConfig = uniStore.getState().translateConfigGlobal
-      if(globalConfig.reverseTranslation){
-        setReverseTranslateText('翻译中...')
-        const toCode = uniUtils.getLangCodeByChannel(globalConfig.formLang, globalConfig.curChannel)
-        const result = await uniHttpApi.translate({to:toCode, channel:globalConfig.curChannel, text})
-        if(result.code === 200){
-            setReverseTranslateText(result.data)
-        }
-
-      }
   }
 
   return (

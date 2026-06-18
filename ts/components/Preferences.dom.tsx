@@ -447,7 +447,6 @@ export function Preferences({
   hasAudioNotifications,
   hasAutoConvertEmoji,
   hasAutoDownloadUpdate,
-  hasAutoLaunch,
   hasCallNotifications,
   hasCallRingtoneNotification,
   hasContentProtection,
@@ -476,7 +475,6 @@ export function Preferences({
   i18n,
   initialSpellCheckSetting,
   isAutoDownloadUpdatesSupported,
-  isAutoLaunchSupported,
   isContentProtectionNeeded,
   isContentProtectionSupported,
   isHideMenuBarSupported,
@@ -499,7 +497,6 @@ export function Preferences({
   onAutoConvertEmojiChange,
   onAutoDownloadAttachmentChange,
   onAutoDownloadUpdateChange,
-  onAutoLaunchChange,
   onBackupKeyViewed,
   onCallNotificationsChange,
   onCallRingtoneNotificationChange,
@@ -858,16 +855,6 @@ export function Preferences({
           </FlowingControl>
         </SettingsRow>
         <SettingsRow title={i18n('icu:Preferences--system')}>
-          {isAutoLaunchSupported && (
-            <Checkbox
-              checked={hasAutoLaunch}
-              disabled={hasAutoLaunch === undefined}
-              label={i18n('icu:autoLaunchDescription')}
-              moduleClassName="Preferences__checkbox"
-              name="autoLaunch"
-              onChange={onAutoLaunchChange}
-            />
-          )}
           {isHideMenuBarSupported && (
             <Checkbox
               checked={hasHideMenuBar}
