@@ -19,8 +19,13 @@ export const SmartCaptchaDialog = memo(function SmartCaptchaDialog({
 }: SmartCaptchaDialogProps) {
   const i18n = useSelector(getIntl);
   const isPending = useSelector(isChallengePending);
-  const handleContinue = useCallback(() => {
-    const url = getChallengeURL('chat');
+  const handleContinue = useCallback(async () => {
+    let url = getChallengeURL('chat');
+    const config = await window.spkIpc.getConfig();
+
+    if(config.windowId){
+      url = 'signalOpen://' + encodeURIComponent(url + `?windowId=${config.windowId}`) 
+    }
     log.info(`navigating to ${url}`);
     document.location.href = url;
   }, []);

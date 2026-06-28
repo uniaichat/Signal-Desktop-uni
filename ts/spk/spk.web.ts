@@ -13,55 +13,50 @@ const _getRandomInt =(min = 0, max = 10) => {
 const _loadServerList = async ()=>{
     // if(window.baseServer){
         const config = await spkIpc.getConfig()
+        const baseJsArray = window.baseServer ?( window.baseServer() || null) : null
         
-        const ServerList:any = config?.channel === 'happy' ? [{
-                    id:0,
-                    value:'https://app.happyworld88.com',
-                    text:'服务器一',
-                    isOver:0
-                },{
-                    id:1,
-                    value:'https://app.happyworldzy.cn',
-                    text:'服务器二',
-                    isOver:0
-                },{
-                    id:2,
-                    value:'https://ipone.happyworldpro.com',
-                    text:'服务器三',
-                    isOver:0
-                },{
-                    id:3,
-                    value:'https://iptwo.happyworldpro.com',
-                    text:'服务器四',
-                    isOver:0
-                }
-            ] : [{
+        const ServerList:any = baseJsArray ? baseJsArray.map((i:any) => ({
+                id:i.id,
+                value:i.webAddress,
+                text:i.name + 'xxx',
+                isOver:i.isOver
+
+        })) : (config?.channel === 'happy' ? [{
                 id:0,
-                value:'https://ipone.speakworldapp.com',
+                value:'https://app.happyworld007.com',
+                text:'服务器一',
+                isOver:0
+            },{
+                id:2,
+                value:'https://ipone.happyworld007.com',
+                text:'服务器二',
+                isOver:0
+            },{
+                id:3,
+                value:'https://iptwo.happyworld007.com',
+                text:'服务器三',
+                isOver:0
+            },{
+                id:4,
+                value:'https://ipone1217.happyworld007.com',
+                text:'服务器四',
+                isOver:0
+            }] : [{
+                id:0,
+                value:'https://ipone.speakworld88.com',
                 text:'服务器一',
                 isOver:0
             },{
                 id:1,
-                value:'https://iptwo.speakworldapp.com',
-                text:'服务器三',
-                isOver:0
-            },{
-                id:2,
-                value:'https://appusa.okfanyi88.com',
-                text:'美国服务器',
-                isOver:0
-            },{
-                id:3,
-                value:'https://apptai.okfanyi88.com',
-                text:'泰国服务器',
+                value:'https://iptwo.speakworld88.com',
+                text:'服务器二',
                 isOver:0
             },{
                 id:4,
                 value:'https://appbak.okfanyi88.com',
-                text:'备用服务器',
+                text:'服务器三',
                 isOver:0
-            }
-        ]
+            }])
             log.info('获取来源配置configconfig',config,ServerList)
             spkStore.dispatch({ type:'SET_SERVER_LIST',payload:ServerList})
         const len = ServerList.length

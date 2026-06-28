@@ -12,6 +12,24 @@ let openParams: any = {}
 let allWindowMap = new Map();
 export const getOpenParams = () => openParams
 export const getAllWindowMap = () => allWindowMap
+let onOpenSignalRoute:
+    | undefined
+    | ((params: {
+        windowId: string;
+        windowName?: string;
+        type?: string;
+        targeturl?: string;
+    }) => void);
+export const setOpenSignalRouteHandler = (
+    handler: (params: {
+        windowId: string;
+        windowName?: string;
+        type?: string;
+        targeturl?: string;
+    }) => void
+) => {
+    onOpenSignalRoute = handler;
+}
 
 // let orgUserData = app.getPath('userData')
 const _initSpkApp = () => {
@@ -31,17 +49,18 @@ const _initSpkApp = () => {
                 log.info('channel----------------------->',channel)
                 const windowName = url.searchParams.get('windowName');
                 const type = url.searchParams.get('type');
+                const targeturl = url.searchParams.get('targeturl');
                 
                 // const token = '6B7B898D918C3C7AEA2F993F555BBC8F';
                 // const channel = 'happy';
 
                 // const channel = 'speak';
-                // const token = "12D192A34C7D1809478A99CAE232F723";
+                // const token = "3485CD8E293B82D77C56CFC3B0A777";
                 // const windowName = '开发测试';
                 // const type = 'add'
                 
                 
-                return windowId ? { windowId, token, windowName,type,channel } : null;
+                return windowId ? { windowId, token, windowName,type,channel,targeturl } : null;
             } catch {
                 return null;
             }
@@ -79,15 +98,18 @@ const _initSpkApp = () => {
 
             // 获取窗口（你项目里自己维护 windowId → BrowserWindow 的 Map）
             const existWin = allWindowMap?.get(params.windowId);
-            
+            log.info('second-instance-------',params)
+            if (params.type === 'opensignal' && params.targeturl) {
+                onOpenSignalRoute?.(params);
+            }
 
             if (existWin) {
-                existWin.setTitle(params.windowName)
+                params?.windowName && existWin.setTitle(params.windowName)
                 if (existWin.isMinimized()) existWin.restore();
                 existWin.show();
                 existWin.focus();
                 existWin.moveTop();
-        }
+            }
         });
 
         // ---------------- lockFile（你原来的逻辑） ----------------

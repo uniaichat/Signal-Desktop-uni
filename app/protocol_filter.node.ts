@@ -180,7 +180,7 @@ export function installWebHandler({
 
   if (!enableHttp) {
     protocol.interceptFileProtocol('http', _disabledHandler);
-    protocol.interceptFileProtocol('https', _disabledHandler);
+    // protocol.interceptFileProtocol('https', _disabledHandler);
     protocol.interceptFileProtocol('ws', _disabledHandler);
     protocol.interceptFileProtocol('wss', _disabledHandler);
   }
