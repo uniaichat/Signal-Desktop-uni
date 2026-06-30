@@ -32,6 +32,11 @@ import {
 import type { MenuItemConstructorOptions, Settings } from 'electron';
 import { z } from 'zod';
 
+import {
+  getAllWindowMap,
+  getOpenParams,
+  setOpenSignalRouteHandler,
+} from '../ts/spk/spk.node.ts';
 import { packageJson } from '../ts/util/packageJson.main.ts';
 import * as GlobalErrors from './global_errors.main.ts';
 import { setup as setupCrashReports } from './crashReports.main.ts';
@@ -221,7 +226,12 @@ const defaultWebPrefs = {
     process.argv.some(arg => arg === '--enable-dev-tools') ||
     getEnvironment() !== Environment.PackagedApp ||
     !isProduction(app.getVersion()),
-  spellcheck: false,
+    spellcheck: false,
+    sandbox: false,
+    nodeIntegration: false,
+    contextIsolation: true,
+    webSecurity: false,
+  enablePreferredSizeMode: true,
 };
 
 const DISABLE_IPV6 = process.argv.some(arg => arg === '--disable-ipv6');
@@ -253,12 +263,8 @@ function showWindow() {
   }
 }
 
-log.info('making app single instance');
-const gotLock = app.requestSingleInstanceLock();
-if (!gotLock) {
-  log.info('quitting; we are the second instance');
-  app.exit();
-} else {
+if (!process.mas) {
+  // 只恢复协议回调处理，不在这里重新接管单实例锁，避免和 spk 多开逻辑冲突。
   app.on('second-instance', (_e: Electron.Event, argv: Array<string>) => {
     // Workaround to let AllowSetForegroundWindow succeed.
     // See https://www.npmjs.com/package/@signalapp/windows-dummy-keystroke for a full explanation of why this is needed.
@@ -266,20 +272,17 @@ if (!gotLock) {
       sendDummyKeystroke();
     }
 
-    // Someone tried to run a second instance, we should focus our window
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) {
-        mainWindow.restore();
-      }
-
-      showWindow();
-    }
-
     const route = maybeGetIncomingSignalRoute(argv);
-    if (route != null) {
-      handleSignalRoute(route);
+    if (route == null) {
+      return;
     }
-    return true;
+
+    if (mainWindow == null || !mainWindow.webContents) {
+      macInitialOpenUrlRoute = route;
+      return;
+    }
+
+    handleSignalRoute(route);
   });
 
   // This event is received in macOS packaged builds.
@@ -287,16 +290,18 @@ if (!gotLock) {
     event.preventDefault();
     const route = parseSignalRoute(incomingHref);
 
-    if (route != null) {
-      // When the app isn't open and you click a signal link to open the app, then
-      // this event will emit before mainWindow is ready. We save the value for later.
-      if (mainWindow == null || !mainWindow.webContents) {
-        macInitialOpenUrlRoute = route;
-        return;
-      }
-
-      handleSignalRoute(route);
+    if (route == null) {
+      return;
     }
+
+    // When the app isn't open and you click a signal link to open the app, then
+    // this event will emit before mainWindow is ready. We save the value for later.
+    if (mainWindow == null || !mainWindow.webContents) {
+      macInitialOpenUrlRoute = route;
+      return;
+    }
+
+    handleSignalRoute(route);
   });
 }
 
@@ -521,7 +526,7 @@ async function handleUrl(rawTarget: string) {
   const { protocol } = parsedUrl;
   const isDevServer = process.env.SIGNAL_ENABLE_HTTP;
 
-  if ((protocol === 'http:' || protocol === 'https:') && !isDevServer) {
+  if ((protocol === 'http:' || protocol === 'https:' || protocol === 'signalopen:') && !isDevServer) {
     try {
       await shell.openExternal(rawTarget);
     } catch (error) {
@@ -851,6 +856,7 @@ async function createWindow() {
     // Open the DevTools.
     mainWindow.webContents.openDevTools();
   }
+    // mainWindow.webContents.openDevTools();
 
   await handleCommonWindowEvents(mainWindow);
 
@@ -1045,6 +1051,15 @@ async function createWindow() {
       ? prepareFileUrl([rootDir, 'test', 'index.html'])
       : prepareFileUrl([rootDir, 'background.html'])
   );
+   const openParams:any = getOpenParams()
+  log.info(openParams, getAllWindowMap(),'-------------------------------++++++++++++++++++++++++++-------')
+  if(openParams?.windowId){
+    getAllWindowMap().set(openParams.windowId, mainWindow)
+  }
+  if(openParams?.windowName){
+    mainWindow.setTitle(openParams.windowName)
+  }
+  log.info(openParams, getAllWindowMap(),'--------------------------------------')
 }
 
 // Renderer asks if we are done with the database
@@ -2683,6 +2698,16 @@ if (!app.isDefaultProtocolClient('signalcaptcha')) {
     'signal is already registered as the default app for the sgnl url scheme.'
   );
 }
+if (!app.isDefaultProtocolClient('spksgnl')) {
+  log.info(
+    'setting signal as the default app for the spksgnl url scheme'
+  );
+  app.setAsDefaultProtocolClient('spksgnl');
+} else {
+  log.info(
+    'signal is already registered as the default app for the sgnl url scheme.'
+  );
+}
 
 ipc.on(
   'set-badge',
@@ -3109,6 +3134,21 @@ function handleSignalRoute(route: ParsedSignalRoute) {
     mainWindow.webContents.send('unknown-sgnl-link');
   }
 }
+
+setOpenSignalRouteHandler(params => {
+  log.info('params.targeturl-------------------++++++++-',params.targeturl)
+  if (params.type !== 'opensignal' || !params.targeturl) {
+    return;
+  }
+  log.info('params.targeturl--------------------',params.targeturl)
+  const route = parseSignalRoute(params.targeturl);
+  if (route == null) {
+    log.warn('setOpenSignalRouteHandler: invalid targeturl', params.targeturl);
+    return;
+  }
+
+  handleSignalRoute(route);
+});
 
 ipc.handle('install-sticker-pack', (_event, packId, packKeyHex) => {
   const packKey = Buffer.from(packKeyHex, 'hex').toString('base64');

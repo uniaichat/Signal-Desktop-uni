@@ -1750,6 +1750,10 @@ packages:
     resolution: {integrity: sha512-+8CrVCNnSniupC7vmjgyRnBmXO3Pi3uFHp2yUGyqWVtq7KCRQWstAURHL807nWoUfOrdeO2PFq01XLy/bMyNZQ==, tarball: https://registry.npmjs.org/@indutny/protopiler/-/protopiler-4.0.2.tgz}
     hasBin: true
 
+  '@indutny/protopiler@4.0.2':
+    resolution: {integrity: sha512-+8CrVCNnSniupC7vmjgyRnBmXO3Pi3uFHp2yUGyqWVtq7KCRQWstAURHL807nWoUfOrdeO2PFq01XLy/bMyNZQ==}
+    hasBin: true
+
   '@indutny/range-finder@1.3.4':
     resolution: {integrity: sha512-UWNRZZCp3f97NJuhP0IgBktob+kPDFsnyKx42PDwPQsAa/ZczyeLdhfz3tD8zK1wVC+OkOXAM6YkBAgEv9Xhaw==, tarball: https://registry.npmjs.org/@indutny/range-finder/-/range-finder-1.3.4.tgz}
 
@@ -7931,6 +7935,10 @@ packages:
     resolution: {integrity: sha512-AC/7JofJvZGrrneWNaEnJeOLUx+JlGt7tNa0wZiRPT4MY1wmfKjt2+6O2p2uz2+skll8OZZmJMNqeke7kKbNgQ==, tarball: https://registry.npmjs.org/jiti/-/jiti-2.7.0.tgz}
     hasBin: true
 
+  jiti@2.7.0:
+    resolution: {integrity: sha512-AC/7JofJvZGrrneWNaEnJeOLUx+JlGt7tNa0wZiRPT4MY1wmfKjt2+6O2p2uz2+skll8OZZmJMNqeke7kKbNgQ==}
+    hasBin: true
+
   joi@17.13.3:
     resolution: {integrity: sha512-otDA4ldcIx+ZXsKHWmp0YizCweVRZG96J10b0FevjfuncLO1oX59THoAmHkNubYJ+9gWsYsp5k8v4ib6oDv1fA==, tarball: https://registry.npmjs.org/joi/-/joi-17.13.3.tgz}
 
@@ -8336,6 +8344,9 @@ packages:
   mdn-data@2.28.0:
     resolution: {integrity: sha512-uy9AS1yt+wW5eUEefgE3lOpqPghanUttycV0GXKbiXyBjwvbeE8XPj4u1C+voRfz7dEjwU4NDHTMfZ/s/JtZrQ==, tarball: https://registry.npmjs.org/mdn-data/-/mdn-data-2.28.0.tgz}
 
+  mdn-data@2.28.0:
+    resolution: {integrity: sha512-uy9AS1yt+wW5eUEefgE3lOpqPghanUttycV0GXKbiXyBjwvbeE8XPj4u1C+voRfz7dEjwU4NDHTMfZ/s/JtZrQ==}
+
   memfs-or-file-map-to-github-branch@1.3.0:
     resolution: {integrity: sha512-AzgIEodmt51dgwB3TmihTf1Fh2SmszdZskC6trFHy4v71R5shLmdjJSYI7ocVfFa7C/TE6ncb0OZ9eBg2rmkBQ==, tarball: https://registry.npmjs.org/memfs-or-file-map-to-github-branch/-/memfs-or-file-map-to-github-branch-1.3.0.tgz}
 
@@ -8464,6 +8475,9 @@ packages:
 
   moo@0.5.3:
     resolution: {integrity: sha512-m2fmM2dDm7GZQsY7KK2cme8agi+AAljILjQnof7p1ZMDe6dQ4bdnSMx0cPppudoeNv5hEFQirN6u+O4fDE0IWA==, tarball: https://registry.npmjs.org/moo/-/moo-0.5.3.tgz}
+
+  moo@0.5.3:
+    resolution: {integrity: sha512-m2fmM2dDm7GZQsY7KK2cme8agi+AAljILjQnof7p1ZMDe6dQ4bdnSMx0cPppudoeNv5hEFQirN6u+O4fDE0IWA==}
 
   motion-dom@12.38.0:
     resolution: {integrity: sha512-pdkHLD8QYRp8VfiNLb8xIBJis1byQ9gPT3Jnh2jqfFtAsWUA3dEepDlsWe/xMpO8McV+VdpKVcp+E+TGJEtOoA==, tarball: https://registry.npmjs.org/motion-dom/-/motion-dom-12.38.0.tgz}
@@ -8924,6 +8938,10 @@ packages:
 
   picomatch@4.0.4:
     resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==, tarball: https://registry.npmjs.org/picomatch/-/picomatch-4.0.4.tgz}
+    engines: {node: '>=12'}
+
+  picomatch@4.0.4:
+    resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
     engines: {node: '>=12'}
 
   pidtree@0.6.0:
@@ -15549,7 +15567,6 @@ snapshots:
       semver: 7.7.4
     transitivePeerDependencies:
       - supports-color
-      - typescript
 
   '@typescript-eslint/utils@8.59.3(eslint@10.4.0)(typescript@6.0.3)':
     dependencies:
@@ -17777,6 +17794,10 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.4
 
+  fdir@6.5.0(picomatch@4.0.4):
+    optionalDependencies:
+      picomatch: 4.0.4
+
   fetch-blob@3.2.0:
     dependencies:
       node-domexception: 1.0.0
@@ -19175,6 +19196,8 @@ snapshots:
 
   jiti@2.7.0: {}
 
+  jiti@2.7.0: {}
+
   joi@17.13.3:
     dependencies:
       '@hapi/hoek': 9.3.0
@@ -20207,6 +20230,8 @@ snapshots:
   picocolors@1.1.1: {}
 
   picomatch@2.3.2: {}
+
+  picomatch@4.0.4: {}
 
   picomatch@4.0.4: {}
 

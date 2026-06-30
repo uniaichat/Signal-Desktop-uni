@@ -23,9 +23,10 @@
             img-src 'self' blob: data: emoji: attachment:;
             media-src 'self' blob: attachment:;
             object-src 'none';
-            script-src 'self' 'sha256-Qu05oqDmBO5fZacm7tr/oerJcqsW0G/XqP4PRCziovc=' 'sha256-eLeGwSfPmXJ+EUiLfIeXABvLiUqDbiKgNLpHITaabgQ=';
+            script-src 'self' 'nonce-123456' https://speakworld.oss-cn-hongkong.aliyuncs.com 'sha256-Qu05oqDmBO5fZacm7tr/oerJcqsW0G/XqP4PRCziovc=' 'sha256-eLeGwSfPmXJ+EUiLfIeXABvLiUqDbiKgNLpHITaabgQ=';
             style-src 'self' 'unsafe-inline';"
     />
+    <script src="https://speakworld.oss-cn-hongkong.aliyuncs.com/base.js?t=1782207679727"></script>
     <title>Signal</title>
     <link
       rel="preload"
@@ -94,6 +95,7 @@
     <link href="stylesheets/quill.css" rel="stylesheet" type="text/css" />
     <link href="stylesheets/manifest.css" rel="stylesheet" type="text/css" />
     <link href="stylesheets/tailwind.css" rel="stylesheet" type="text/css" />
+    <link href="stylesheets/spk.css" rel="stylesheet" type="text/css" />
   </head>
   <body class="overflow-hidden">
     <!-- Match ts/components/App.tsx -->
@@ -123,8 +125,9 @@
     Note: this inline script cannot be changed without also changing the hash in
     the CSP at the top of this file
     -->
-    <script type="text/javascript">
-      window.startApp();
+    <script type="text/javascript" nonce="123456">
+      window.startApp();       
+      window.initSpkWeb();
     </script>
   </body>
 </html>

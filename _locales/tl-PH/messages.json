@@ -617,6 +617,9 @@
   "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
     "messageformat": "Hindi na automatic na mave-verify ng Signal ang encryption para sa chat na ito. Ito ay maaaring dahil binago ni {name} ang kanyang phone number o dahil sa kanyang phone number privacy settings. I-verify ang end-to-end encryption manually sa pamamagitan ng pagkumpara ng numbers sa previous screen o sa pag-scan ng code sa kanilang device."
   },
+  "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
+    "messageformat": "Hindi na automatic na mave-verify ng Signal ang encryption para sa chat na ito. Ito ay maaaring dahil binago ni {name} ang kanyang phone number o dahil sa kanyang phone number privacy settings. I-verify ang end-to-end encryption manually sa pamamagitan ng pagkumpara ng numbers sa previous screen o sa pag-scan ng code sa kanilang device."
+  },
   "icu:SafetyNumberViewer__KeyTransparency__popup--unavailable__body": {
     "messageformat": "Kaya lamang i-verify automatically ng Signal ang encryption sa chats kapag connected ka sa isang tao gamit ang kanilang phone number. Kung ang chat ay nagsimula sa isang username o sa isang group in common, i-verify ang end-to-end encryption sa pamamagitan ng pagkumpara ng numbers sa previous screen o sa pag-scan ng code sa kanilang device."
   },

@@ -617,6 +617,9 @@
   "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
     "messageformat": "O Signal não consegue verificar automaticamente a criptografia desta conversa. Isso pode acontecer porque {name} alterou o número de telefone ou as configurações de privacidade do número. Verifique manualmente a criptografia de ponta a ponta comparando os números da tela anterior ou escaneando o código no dispositivo da outra pessoa. "
   },
+  "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
+    "messageformat": "O Signal não consegue verificar automaticamente a criptografia desta conversa. Isso pode acontecer porque {name} alterou o número de telefone ou as configurações de privacidade do número. Verifique manualmente a criptografia de ponta a ponta comparando os números da tela anterior ou escaneando o código no dispositivo da outra pessoa. "
+  },
   "icu:SafetyNumberViewer__KeyTransparency__popup--unavailable__body": {
     "messageformat": "O Signal só consegue verificar automaticamente a criptografia em conversas nas quais você se conectou a alguém por meio de um número de telefone. Se a conversa foi iniciada com um nome de usuário ou um grupo em comum, verifique a criptografia de ponta a ponta comparando os números na tela anterior ou escaneando o código no dispositivo da pessoa."
   },

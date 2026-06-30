@@ -13,6 +13,8 @@ import { getSuggestedFilename } from '../../util/Attachment.std.ts';
 import { IMAGE_PNG, type MIMEType } from '../../types/MIME.std.ts';
 import { isSignalConversation } from '../../util/isSignalConversation.dom.ts';
 import { SignalConversationBackground } from './SignalConversationBackground.dom.tsx';
+import { SpkTranslateSettingBar } from '../../spk/components/SpkTranslateSettingBar.dom.tsx';
+import { spkStore } from '../../spk/spk.store.ts';
 
 export type PropsType = {
   conversationId: string;
@@ -173,6 +175,7 @@ export function ConversationView({
       >
         {isSignalConvo ? <SignalConversationBackground /> : null}
         <div className="ConversationView__header">
+          {spkStore.getState()?.userInfo?.id && <SpkTranslateSettingBar chatId={conversationId} key={conversationId}/>}          
           {renderConversationHeader(conversationId)}
         </div>
         <div className="ConversationView__pane">

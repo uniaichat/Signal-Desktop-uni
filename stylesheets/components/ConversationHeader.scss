@@ -35,7 +35,8 @@
   flex-direction: row;
   gap: 8px;
   align-items: center;
-  height: calc(#{variables.$header-height} + var(--title-bar-drag-area-height));
+  // height: calc(#{variables.$header-height} + var(--title-bar-drag-area-height));
+  height: calc(#{variables.$header-height} + var(--title-bar-drag-area-height) - 21px);
 
   &__header {
     $padding: 4px 12px;

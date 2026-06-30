@@ -617,6 +617,9 @@
   "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
     "messageformat": "Signal nuk mund ta verifikojë më automatikisht kodimin për këtë bisedë. Kjo mund të jetë sepse {name} ka ndryshuar numrin e telefonit ose parametrat e privatësisë së numrit të telefonit. Verifiko manualisht kodimin nga skaji në skaj duke krahasuar numrat në ekranin e mëparshëm ose duke skanuar kodin në pajisje."
   },
+  "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
+    "messageformat": "Signal nuk mund ta verifikojë më automatikisht kodimin për këtë bisedë. Kjo mund të jetë sepse {name} ka ndryshuar numrin e telefonit ose parametrat e privatësisë së numrit të telefonit. Verifiko manualisht kodimin nga skaji në skaj duke krahasuar numrat në ekranin e mëparshëm ose duke skanuar kodin në pajisje."
+  },
   "icu:SafetyNumberViewer__KeyTransparency__popup--unavailable__body": {
     "messageformat": "Signal mund ta verifikojë automatikisht kodimin vetëm në bisedat ku je i lidhur me dikë nëpërmjet një numri telefoni. Nëse biseda ka filluar me një emër përdoruesi ose me një grup të përbashkët, verifiko kodimin nga skaji në skaj duke krahasuar numrat në ekranin e mëparshëm ose duke skanuar kodin në pajisje."
   },

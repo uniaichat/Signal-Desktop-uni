@@ -266,6 +266,7 @@ export const CompositionArea = memo(function CompositionArea({
   isSignalConversation,
   isActive,
   lastEditableMessageId,
+  messageCompositionId,
   pushPanelForConversation,
   platform,
   textIncludesRecoveryKey,

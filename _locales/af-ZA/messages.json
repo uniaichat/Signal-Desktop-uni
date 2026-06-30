@@ -617,6 +617,9 @@
   "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
     "messageformat": "Signal kan nie die enkriptering vir hierdie klets outomaties verifieer nie. Dit kan wees omdat {name} hul telefoonnommer of hul telefoonnommer se privaatheidsinstellings verander het. Verifieer end-tot-end-enkriptering handmatig deur vergelyking van die nommers op die vorige skerm of deur die kode op hul toestel te skandeer."
   },
+  "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
+    "messageformat": "Signal kan nie die enkriptering vir hierdie klets outomaties verifieer nie. Dit kan wees omdat {name} hul telefoonnommer of hul telefoonnommer se privaatheidsinstellings verander het. Verifieer end-tot-end-enkriptering handmatig deur vergelyking van die nommers op die vorige skerm of deur die kode op hul toestel te skandeer."
+  },
   "icu:SafetyNumberViewer__KeyTransparency__popup--unavailable__body": {
     "messageformat": "Signal kan slegs die enkripsie in kletse outomaties verifieer indien jy via 'n telefoonnommer met iemand verbind is. Indien die klets met 'n gemeenskaplike gebruikersnaam of groep begin is, verifieer end-tot-end-enkriptering deur vergelyking van die nommers op die vorige skerm of deur die kode op hul toestel te skandeer."
   },
