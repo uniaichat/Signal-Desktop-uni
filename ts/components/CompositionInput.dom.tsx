@@ -97,6 +97,8 @@ import { AxoTooltip } from '../axo/AxoTooltip.dom.tsx';
 import { tw } from '../axo/tw.dom.tsx';
 import type { Emoji } from '../axo/emoji.std.ts';
 import { RecoveryKeyPasteWarning } from './RecoveryKeyPasteWarning.dom.tsx';
+import { uniStore } from '../uni/uni.store.ts';
+import { uniHttpApi, uniUtils } from '../uni/uni.web.utls.ts';
 
 const log = createLogger('CompositionInput');
 
@@ -177,6 +179,7 @@ export type Props = Readonly<{
   showViewOnceButton: boolean;
   isViewOnceActive: boolean;
   onToggleViewOnce: () => void;
+  onTranslateSuccess?: (text:string)=> unknown;
 }>;
 
 const BASE_CLASS_NAME = 'module-composition-input';
@@ -216,6 +219,7 @@ export function CompositionInput(props: Props): ReactElement {
     showViewOnceButton,
     isViewOnceActive,
     onToggleViewOnce,
+    onTranslateSuccess,
     showRecoveryKeyPasteWarning,
   } = props;
 
@@ -367,8 +371,31 @@ export function CompositionInput(props: Props): ReactElement {
     },
     []
   );
+  const [curChat, setCurChat] = useState(uniStore.getState().curChat)
+  const [uniLoginUser, setUniLoginUser] = useState(uniStore.getState().userInfo)
+  const [uniTranslateConfigGlobal] = useState(uniStore.getState().translateConfigGlobal)
+  const setUniInfo = ()=>{
+      const state = uniStore.getState();
+      const chat = state.curChat;
+      const langMap = state.langMap;
+      const loginUser = state.userInfo;
+      setUniLoginUser(loginUser)
+      setCurChat(chat);
+      const quill = quillRef.current;
+      if (quill && loginUser?.customerId) {
+        quill.root.dataset.placeholder = chat?.sendTranslate ? `消息将翻译成【${langMap[chat.toLang]?.name}】，再次回车发送` : '发送翻译已关闭，消息将直接发送';
+      }
 
-  const submit = useCallback(() => {
+  }
+  useEffect(()=>{
+    const unsubscribe = uniStore.subscribe(() => {
+      setUniInfo()
+    });
+    setUniInfo()
+    return () => unsubscribe();
+  },[])
+
+  const submit = useCallback(async () => {
     const timestamp = Date.now();
     const quill = quillRef.current;
 
@@ -382,7 +409,29 @@ export function CompositionInput(props: Props): ReactElement {
     }
 
     const { text, bodyRanges } = getTextAndRanges();
+    if(uniLoginUser.customerId){
+      const loadingTxt = '正在翻译中...'
+      const toLang = curChat.toLang
+      if(text === loadingTxt){
+        return
+      }
+      if(text && uniUtils.sendMessageVerifyLang(toLang, text) && curChat.sendTranslate){
+        quill.setText(loadingTxt);
+        const channel = uniStore.getState().translateConfigGlobal.curChannel;
+        const toCode = uniUtils.getLangCodeByChannel(curChat.toLang, channel)//uniTranslateConfigGlobal.formLang
+        const formCode = uniUtils.getLangCodeByChannel(uniTranslateConfigGlobal.formLang, channel)//uniTranslateConfigGlobal.formLang
+        const result = await uniHttpApi.translate({to:toCode, channel, text})
+        if(result.code === 200){
+          const translation = result.data
+          quill.setText(translation);
+          onTranslateSuccess && onTranslateSuccess(translation)
+          window.uniIpc.setTranslateCache({to:formCode,text:translation,translation:text})
+        }
+        return
 
+      }
+
+    }
     log.info(
       `Submitting message ${timestamp} with ${bodyRanges.length} ranges`
     );

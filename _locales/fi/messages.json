@@ -617,6 +617,9 @@
   "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
     "messageformat": "Signal ei voi enää automaattisesti vahvistaa keskustelun salausta. Tämä johtuu todennäköisesti siitä, että {name} on vaihtanut puhelinnumeroaan tai puhelinnumeronsa yksityisyysasetuksia. Varmista päästä päähän -salaus vertaamalla edellisen näytön numeroita tai skannaamalla käyttäjän laitteen koodi."
   },
+  "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
+    "messageformat": "Signal ei voi enää automaattisesti vahvistaa keskustelun salausta. Tämä johtuu todennäköisesti siitä, että {name} on vaihtanut puhelinnumeroaan tai puhelinnumeronsa yksityisyysasetuksia. Varmista päästä päähän -salaus vertaamalla edellisen näytön numeroita tai skannaamalla käyttäjän laitteen koodi."
+  },
   "icu:SafetyNumberViewer__KeyTransparency__popup--unavailable__body": {
     "messageformat": "Signal voi automaattisesti tarkistaa salauksen vain keskusteluissa, joissa yhteys on muodostettu puhelinnumeron avulla. Jos keskustelu on aloitettu käyttäjänimen tai yhteisen ryhmän perusteella, varmista päästä päähän -salaus vertaamalla edellisen näytön numeroita tai skannaamalla käyttäjän laitteen koodi."
   },

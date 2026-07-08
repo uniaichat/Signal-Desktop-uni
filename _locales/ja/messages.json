@@ -617,6 +617,9 @@
   "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
     "messageformat": "Signalは、このチャットの暗号化を自動で確認できません。{name} が電話番号を変更したか、電話番号のプライバシー設定を変更した可能性があります。前の画面の番号を相手と比較するか、相手の端末のコードをスキャンして、エンドツーエンドの暗号化を手動で確認してください。"
   },
+  "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
+    "messageformat": "Signalは、このチャットの暗号化を自動で確認できません。{name} が電話番号を変更したか、電話番号のプライバシー設定を変更した可能性があります。前の画面の番号を相手と比較するか、相手の端末のコードをスキャンして、エンドツーエンドの暗号化を手動で確認してください。"
+  },
   "icu:SafetyNumberViewer__KeyTransparency__popup--unavailable__body": {
     "messageformat": "Signalが暗号化を自動で確認できるのは、相手の電話番号を通じて接続しているチャットのみです。ユーザーネームまたは共通のグループを通じてチャットが開始された場合は、前の画面の番号を相手と比較するか、相手の端末のコードをスキャンして、エンドツーエンドの暗号化を確認してください。"
   },

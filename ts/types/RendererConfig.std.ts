@@ -59,6 +59,7 @@ export const rendererConfigSchema = z.object({
   preferredSystemLocales: z.array(configRequiredStringSchema),
   localeOverride: z.string().nullable(),
   name: configRequiredStringSchema,
+  windowName: configRequiredStringSchema,
   nodeVersion: configRequiredStringSchema,
   proxyUrl: configOptionalStringSchema,
   reducedMotionSetting: z.boolean(),

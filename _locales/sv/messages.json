@@ -617,6 +617,9 @@
   "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
     "messageformat": "Signal kan inte automatiskt verifiera krypteringen för den här chatten. Detta kan bero på att {name} har ändrat sitt telefonnummer eller inställningarna för integritet för telefonnummer. Verifiera totalsträckskryptering manuellt genom att jämföra siffrorna på den föregående skärmen eller skanna koden på deras enhet."
   },
+  "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
+    "messageformat": "Signal kan inte automatiskt verifiera krypteringen för den här chatten. Detta kan bero på att {name} har ändrat sitt telefonnummer eller inställningarna för integritet för telefonnummer. Verifiera totalsträckskryptering manuellt genom att jämföra siffrorna på den föregående skärmen eller skanna koden på deras enhet."
+  },
   "icu:SafetyNumberViewer__KeyTransparency__popup--unavailable__body": {
     "messageformat": "Signal kan bara automatiskt verifiera krypteringen i chattar där du är ansluten till någon via ett telefonnummer. Om chatten startades med ett användarnamn eller en gemensam grupp, verifiera totalsträckskryptering genom att jämföra siffrorna på den föregående skärmen eller skanna koden på deras enhet."
   },

@@ -59,12 +59,11 @@ export const isAutoDownloadUpdatesSupported = (
   OS: OSType,
   appVersion: string
 ): boolean => {
-  if (isNotUpdatable(appVersion)) {
-    return false;
-  }
-  return (
-    OS.isWindows() || (OS.isMacOS() && !OS.isMAS()) || OS.isLinuxAppImage()
-  );
+  return false
+  // if (isNotUpdatable(appVersion)) {
+  //   return false;
+  // }
+  // return OS.isWindows() || OS.isMacOS() || OS.isLinuxAppImage();
 };
 
 export const shouldHideExpiringMessageBody = (

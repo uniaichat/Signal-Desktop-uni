@@ -12,6 +12,7 @@ import { realpath } from 'node:fs/promises';
  */
 export async function sign(configuration) {
   // In CI, we remove certificate information from package.json to disable signing
+  return
   if (
     !configuration.options.signtoolOptions ||
     !configuration.options.signtoolOptions.certificateSha1

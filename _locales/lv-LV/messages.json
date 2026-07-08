@@ -617,6 +617,9 @@
   "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
     "messageformat": "Signal nevar automātiski verificēt šīs sarunas šifrēšanu. Iespējams, tas ir tāpēc, ka {name} nomainīja savu tālruņa numuru vai tālruņa numura privātuma iestatījumus. Pārbaudiet pilnīgo šifrēšanu manuāli, salīdzinot iepriekšējā ekrānā redzamos ciparus vai skenējot kodu otras personas ierīcē."
   },
+  "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
+    "messageformat": "Signal nevar automātiski verificēt šīs sarunas šifrēšanu. Iespējams, tas ir tāpēc, ka {name} nomainīja savu tālruņa numuru vai tālruņa numura privātuma iestatījumus. Pārbaudiet pilnīgo šifrēšanu manuāli, salīdzinot iepriekšējā ekrānā redzamos ciparus vai skenējot kodu otras personas ierīcē."
+  },
   "icu:SafetyNumberViewer__KeyTransparency__popup--unavailable__body": {
     "messageformat": "Signal var automātiski pārbaudīt šifrēšanu tikai tajās sarunās, kurās esat savienoti ar kādu personu, izmantojot tālruņa numuru. Ja saruna tika sākta ar kopīgu lietotājvārdu vai grupu, pārbaudiet pilnīgo šifrēšanu, salīdzinot iepriekšējā ekrānā redzamos ciparus vai skenējot kodu otras personas ierīcē."
   },

@@ -617,6 +617,9 @@
   "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
     "messageformat": "Signal tidak lagi boleh mengesahkan penyulitan untuk sembang ini secara automatik. Ini mungkin kerana {name} menukar nombor telefon mereka atau tetapan privasi nombor telefon mereka. Sahkan penyulitan hujung ke hujung secara manual dengan membandingkan nombor pada skrin sebelumnya atau mengimbas kod pada peranti mereka."
   },
+  "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
+    "messageformat": "Signal tidak lagi boleh mengesahkan penyulitan untuk sembang ini secara automatik. Ini mungkin kerana {name} menukar nombor telefon mereka atau tetapan privasi nombor telefon mereka. Sahkan penyulitan hujung ke hujung secara manual dengan membandingkan nombor pada skrin sebelumnya atau mengimbas kod pada peranti mereka."
+  },
   "icu:SafetyNumberViewer__KeyTransparency__popup--unavailable__body": {
     "messageformat": "Signal hanya boleh mengesahkan penyulitan secara automatik dalam sembang apabila anda disambungkan dengan seseorang melalui nombor telefon. Jika sembang dimulakan dengan nama pengguna atau melalui kumpulan yang sama, sahkan penyulitan hujung ke hujung dengan membandingkan nombor pada skrin sebelumnya atau mengimbas kod pada peranti mereka."
   },

@@ -194,6 +194,13 @@ declare global {
     reduxActions: ReduxActions;
     reduxStore: Store<StateType>;
 
+    // uni
+    uniStore: Store<StateType>;
+    uniIpc:any;
+    initUniWeb:()=> void;
+    baseServer:()=> void;
+    
+
     // Feature Flags
     Flags: FeatureFlagType;
 

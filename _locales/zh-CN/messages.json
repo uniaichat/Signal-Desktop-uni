@@ -617,6 +617,9 @@
   "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
     "messageformat": "Signal 无法自动验证此聊天的加密。这可能是因为 {name} 更改了手机号码或手机号码隐私设置。请通过比对前一个屏幕上的数字或扫描对方设备上的二维码来手动验证端对端加密。"
   },
+  "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
+    "messageformat": "Signal 无法自动验证此聊天的加密。这可能是因为 {name} 更改了手机号码或手机号码隐私设置。请通过比对前一个屏幕上的数字或扫描对方设备上的二维码来手动验证端对端加密。"
+  },
   "icu:SafetyNumberViewer__KeyTransparency__popup--unavailable__body": {
     "messageformat": "Signal 只能对通过手机号码连接的联系人的聊天进行自动加密验证。如果使用用户名或在共同群组中发起聊天，请通过比对前一个屏幕上的数字或扫描对方设备上的二维码验证端对端加密。"
   },

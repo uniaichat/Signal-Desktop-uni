@@ -146,4 +146,7 @@ if (window.SignalContext.config.ciMode === 'full') {
 if (getEnvironment() !== Environment.Test) {
   contextBridge.exposeInMainWorld('showDebugLog', window.IPC.showDebugLog);
   contextBridge.exposeInMainWorld('startApp', window.startApp);
+  contextBridge.exposeInMainWorld('uniIpc', window.uniIpc);
+  contextBridge.exposeInMainWorld('initUniWeb', window.initUniWeb);
+  contextBridge.exposeInMainWorld('uniStore', window.uniStore);
 }

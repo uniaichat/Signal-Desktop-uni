@@ -617,6 +617,9 @@
   "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
     "messageformat": "Signal bu sohbet için şifrelemeyi otomatik olarak doğrulayamıyor. Bunun sebebi muhtemelen {name} kişisinin telefon numarasını veya telefon numarası gizlilik ayarlarını değiştirmiş olmasıdır. Önceki ekrandaki numaraları karşılaştırarak veya karşı tarafın cihazındaki kodu tarayarak uçtan uca şifrelemeyi manuel olarak doğrula."
   },
+  "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
+    "messageformat": "Signal bu sohbet için şifrelemeyi otomatik olarak doğrulayamıyor. Bunun sebebi muhtemelen {name} kişisinin telefon numarasını veya telefon numarası gizlilik ayarlarını değiştirmiş olmasıdır. Önceki ekrandaki numaraları karşılaştırarak veya karşı tarafın cihazındaki kodu tarayarak uçtan uca şifrelemeyi manuel olarak doğrula."
+  },
   "icu:SafetyNumberViewer__KeyTransparency__popup--unavailable__body": {
     "messageformat": "Signal, sadece telefon numarası ile bağlı olduğun sohbetlerdeki şifrelemeyi otomatik olarak doğrulayabilir. Sohbet bir kullanıcı adı veya ortak bir grupla başlatılmışsa, önceki ekrandaki rakamları karşılaştırarak veya cihazındaki kodu tarayarak uçtan uca şifrelemeyi doğrula."
   },

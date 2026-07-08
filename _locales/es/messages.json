@@ -617,6 +617,9 @@
   "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
     "messageformat": "Signal no puede verificar automáticamente el cifrado de este chat. Es probable que {name} haya cambiado su número de teléfono o los ajustes de privacidad de su número de teléfono. Verifica el cifrado de extremo a extremo manualmente comparando los números en la pantalla anterior o escaneando el código que se muestra en su dispositivo."
   },
+  "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
+    "messageformat": "Signal no puede verificar automáticamente el cifrado de este chat. Es probable que {name} haya cambiado su número de teléfono o los ajustes de privacidad de su número de teléfono. Verifica el cifrado de extremo a extremo manualmente comparando los números en la pantalla anterior o escaneando el código que se muestra en su dispositivo."
+  },
   "icu:SafetyNumberViewer__KeyTransparency__popup--unavailable__body": {
     "messageformat": "Signal solo puede verificar automáticamente el cifrado en los chats que hayas empezado con alguien mediante un número de teléfono. Si iniciaste un chat con alguien a través de un alias o un grupo en común, verifica el cifrado de extremo a extremo comparando los números en la pantalla anterior o escaneando el código que se muestra en su dispositivo."
   },

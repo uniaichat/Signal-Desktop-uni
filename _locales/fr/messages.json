@@ -617,6 +617,9 @@
   "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
     "messageformat": "Signal ne peut pas vérifier automatiquement le chiffrement de cette conversation. {name} a probablement changé de numéro ou modifié les paramètres de confidentialité de son numéro de téléphone. Pour vérifier le chiffrement de bout en bout manuellement, il vous suffit de scanner le code QR qui s'affiche sur l'appareil de votre contact ou de comparer les chiffres de l'écran précédent avec ceux qui s'affichent sur le sien."
   },
+  "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
+    "messageformat": "Signal ne peut pas vérifier automatiquement le chiffrement de cette conversation. {name} a probablement changé de numéro ou modifié les paramètres de confidentialité de son numéro de téléphone. Pour vérifier le chiffrement de bout en bout manuellement, il vous suffit de scanner le code QR qui s'affiche sur l'appareil de votre contact ou de comparer les chiffres de l'écran précédent avec ceux qui s'affichent sur le sien."
+  },
   "icu:SafetyNumberViewer__KeyTransparency__popup--unavailable__body": {
     "messageformat": "Signal ne peut vérifier automatiquement le chiffrement que lorsque vous avez initié la conversation via un numéro de téléphone. Si vous l'avez fait via un nom d'utilisateur ou un groupe en commun, vous devez vérifier le chiffrement de bout en bout manuellement. Il vous suffit de scanner le code QR qui s'affiche sur l'appareil de votre contact ou de comparer les chiffres de l'écran précédent avec ceux qui s'affichent sur le sien."
   },

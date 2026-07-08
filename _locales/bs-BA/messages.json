@@ -617,6 +617,9 @@
   "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
     "messageformat": "Signal ne može automatski potvrditi šifriranje za ovaj chat. To može biti zato što je {name} promijenio/la broj telefona ili postavke privatnosti svog broja telefona. Ručno provjerite sveobuhvatno šifriranje upoređivanjem brojeva na prethodnom ekranu ili skeniranjem koda na njihovom uređaju."
   },
+  "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
+    "messageformat": "Signal ne može automatski potvrditi šifriranje za ovaj chat. To može biti zato što je {name} promijenio/la broj telefona ili postavke privatnosti svog broja telefona. Ručno provjerite sveobuhvatno šifriranje upoređivanjem brojeva na prethodnom ekranu ili skeniranjem koda na njihovom uređaju."
+  },
   "icu:SafetyNumberViewer__KeyTransparency__popup--unavailable__body": {
     "messageformat": "Signal može automatski provjeriti šifriranje samo u chatovima u kojima ste povezani s nekim putem telefonskog broja. Ako je chat započet s korisničkim imenom ili zajedničkom grupom, provjerite sveobuhvatno šifriranje upoređivanjem brojeva na prethodnom ekranu ili skeniranjem koda na njihovom uređaju."
   },

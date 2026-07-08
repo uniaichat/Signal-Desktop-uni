@@ -6,7 +6,7 @@
   "description": "Private messaging from your desktop",
   "desktopName": "signal.desktop",
   "repository": "https://github.com/signalapp/Signal-Desktop.git",
-  "version": "8.17.0",
+  "version": "8.17.1",
   "license": "AGPL-3.0-only",
   "author": {
     "name": "Signal Messenger, LLC",
@@ -17,7 +17,7 @@
   "scripts": {
     "postinstall": "pnpm run build:acknowledgments && pnpm run electron:install-app-deps",
     "postuninstall": "pnpm run build:acknowledgments",
-    "start": "electron .",
+    "start": "electron . unisgnl://openNewApp?windowId=11103",
     "generate": "run-s generate:phase-0 generate:phase-1",
     "generate:phase-0": "run-s build:protobuf build:emoji-data build:rolldown:prod",
     "generate:phase-1": "run-p --aggregate-output --print-label build:icu-types build:compact-locales build:styles:prod get-expire-time build:policy-files build:db-schema",
@@ -348,67 +348,25 @@
     "nativeRebuilder": "parallel",
     "mac": {
       "artifactName": "${name}-mac-${arch}-${version}.${ext}",
-      "category": "public.app-category.social-networking",
-      "darkModeSupport": true,
-      "hardenedRuntime": true,
-      "entitlements": "./build/entitlements.mac.plist",
-      "entitlementsInherit": "./build/entitlements.mac.inherit.plist",
-      "icon": "build/icons/mac/AppIcon.icon",
+      "icon": "build/icons/mac/icon.icns",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "identity": null,
+      "sign": false,
+      "strictVerify": false,
       "publish": [
         {
           "provider": "generic",
-          "url": "https://updates.signal.org/desktop"
+          "url": ""
         }
       ],
-      "mergeASARs": true,
-      "sign": "scripts/sign-macos.mjs",
-      "signInstaller": "scripts/sign-mas-installer.mjs",
-      "releaseInfo": {
-        "vendor": {
-          "minOSVersion": "21.0.1"
-        }
-      },
-      "singleArchFiles": "node_modules/{@signalapp,@indutny}/{libsignal-client/prebuilds/**,ringrtc/build/**,sqlcipher/prebuilds/**,mac-screen-share/prebuilds/**}",
       "target": [
         {
-          "target": "zip",
+          "target": "dmg",
           "arch": [
             "x64",
             "arm64"
           ]
-        },
-        {
-          "target": "dmg",
-          "arch": [
-            "universal"
-          ]
-        }
-      ],
-      "bundleVersion": "1",
-      "extendInfo": {
-        "NSAutoFillRequiresTextContentTypeForOneTimeCodeOnMac": true
-      }
-    },
-    "dmg": {
-      "title": "${productName} Installer",
-      "background": "build/dmg/background.tiff",
-      "icon": "build/dmg/icon.icns",
-      "iconSize": 96,
-      "window": {
-        "width": 540,
-        "height": 394
-      },
-      "contents": [
-        {
-          "type": "file",
-          "x": 152,
-          "y": 161
-        },
-        {
-          "path": "/Applications",
-          "type": "link",
-          "x": 368,
-          "y": 161
         }
       ]
     },
@@ -435,15 +393,7 @@
       }
     },
     "win": {
-      "signtoolOptions": {
-        "certificateSubjectName": "Signal Messenger, LLC",
-        "certificateSha1": "8D5E3CD800736C5E1FE459A1F5AA48287D4F6EC6",
-        "publisherName": "Signal Messenger, LLC",
-        "sign": "scripts/sign-windows.mjs",
-        "signingHashAlgorithms": [
-          "sha256"
-        ]
-      },
+      "signtoolOptions": null,
       "artifactName": "${name}-win-${arch}-${version}.${ext}",
       "icon": "build/icons/win/icon.ico",
       "publish": [
@@ -540,13 +490,10 @@
       "name": "sgnl-url-scheme",
       "schemes": [
         "sgnl",
-        "signalcaptcha"
+        "signalcaptcha",
+        "unisgnl"
       ]
     },
-    "artifactBuildCompleted": "scripts/artifact-build-completed.mjs",
-    "afterSign": "scripts/after-sign.mjs",
-    "afterPack": "scripts/after-pack.mjs",
-    "afterAllArtifactBuild": "scripts/after-all-artifact-build.mjs",
     "asar": {
       "smartUnpack": false
     },

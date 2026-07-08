@@ -617,6 +617,9 @@
   "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
     "messageformat": "O Signal não pode verificar automaticamente a encriptação para este chat. Isto deve-se provavelmente ao facto de {name} ter mudado o número de telemóvel ou as definições de privacidade do número de telemóvel. Verifique a encriptação de ponta a ponta manualmente comparando os números no ecrã anterior ou digitalizando o código no seu dispositivo."
   },
+  "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
+    "messageformat": "O Signal não pode verificar automaticamente a encriptação para este chat. Isto deve-se provavelmente ao facto de {name} ter mudado o número de telemóvel ou as definições de privacidade do número de telemóvel. Verifique a encriptação de ponta a ponta manualmente comparando os números no ecrã anterior ou digitalizando o código no seu dispositivo."
+  },
   "icu:SafetyNumberViewer__KeyTransparency__popup--unavailable__body": {
     "messageformat": "O Signal só pode verificar automaticamente a encriptação em chats em que esteja ligado a alguém através de um número de telemóvel. Se o chat tiver sido iniciado com um nome de utilizador ou um grupo em comum, verifique a encriptação de ponta a ponta comparando os números no ecrã anterior ou digitalizando o código no dispositivo."
   },

@@ -617,6 +617,9 @@
   "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
     "messageformat": "Signal nedokáže automaticky overiť šifrovanie tohto četu. Je to pravdepodobne preto, že používateľ {name} zmenil svoje telefónne číslo alebo nastavenia súkromia tohto čísla. Overte end-to-end šifrovanie manuálne porovnaním čísel na predchádzajúcej obrazovke alebo naskenovaním kódu na zariadení používateľa."
   },
+  "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
+    "messageformat": "Signal nedokáže automaticky overiť šifrovanie tohto četu. Je to pravdepodobne preto, že používateľ {name} zmenil svoje telefónne číslo alebo nastavenia súkromia tohto čísla. Overte end-to-end šifrovanie manuálne porovnaním čísel na predchádzajúcej obrazovke alebo naskenovaním kódu na zariadení používateľa."
+  },
   "icu:SafetyNumberViewer__KeyTransparency__popup--unavailable__body": {
     "messageformat": "Signal dokáže automaticky overiť šifrovanie iba v četoch, v ktorých ste s niekým spojení prostredníctvom telefónneho čísla. Ak bol čet spustený s používateľským menom alebo spoločnou skupinou, overte end-to-end šifrovanie porovnaním čísel na predchádzajúcej obrazovke alebo naskenovaním kódu na zariadení používateľa."
   },

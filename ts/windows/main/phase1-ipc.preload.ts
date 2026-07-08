@@ -72,7 +72,7 @@ window.getGenericServerPublicParams = () => config.genericServerPublicParams;
 window.getBackupServerPublicParams = () => config.backupServerPublicParams;
 window.getSfuUrl = () => config.sfuUrl;
 
-let title = config.name;
+let title = config.windowName || config.name;
 if (config.environment !== Environment.PackagedApp) {
   title += ` - ${config.environment}`;
 }

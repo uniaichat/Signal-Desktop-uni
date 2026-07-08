@@ -125,6 +125,8 @@ import type { ContactModalStateType } from '../../types/globalModals.std.ts';
 import { tw } from '../../axo/tw.dom.tsx';
 import { Emoji } from '../../axo/emoji.std.ts';
 import { AxoButton } from '../../axo/AxoButton.dom.tsx';
+import { uniStore } from '../../uni/uni.store.ts';
+import { UniTranslateMessage } from '../../uni/components/UniTranslateMessage.dom.tsx';
 
 const { drop, take, unescape } = lodash;
 
@@ -2528,6 +2530,7 @@ export class Message extends PureComponent<Props, State> {
             textAttachment={textAttachment}
           />
         )}
+        {uniStore.getState()?.userInfo?.customerId && <UniTranslateMessage text={text || ''} direction={direction}/>}
         {this.#getMetadataPlacement() === MetadataPlacement.InlineWithText && (
           <MessageTextMetadataSpacer metadataWidth={metadataWidth} />
         )}

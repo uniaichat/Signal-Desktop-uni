@@ -617,6 +617,9 @@
   "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
     "messageformat": "Signal nemůže automaticky ověřit šifrování tohoto chatu. Může to být tím, že {name} změnil/a své telefonní číslo nebo nastavení soukromí. Koncové šifrování můžete ověřit ručně porovnáním čísel na předchozí obrazovce nebo naskenováním kódu na zařízení daného člověka."
   },
+  "icu:SafetyNumberViewer__KeyTransparency__popup--fail__body-2": {
+    "messageformat": "Signal nemůže automaticky ověřit šifrování tohoto chatu. Může to být tím, že {name} změnil/a své telefonní číslo nebo nastavení soukromí. Koncové šifrování můžete ověřit ručně porovnáním čísel na předchozí obrazovce nebo naskenováním kódu na zařízení daného člověka."
+  },
   "icu:SafetyNumberViewer__KeyTransparency__popup--unavailable__body": {
     "messageformat": "Aplikace Signal může automaticky ověřit šifrování pouze v chatech, kde jste s někým propojeni prostřednictvím telefonního čísla. Pokud byl chat zahájen se společným uživatelským jménem nebo skupinou, ověřte koncové šifrování porovnáním čísel na předchozí obrazovce nebo naskenováním kódu na jejich zařízení."
   },
