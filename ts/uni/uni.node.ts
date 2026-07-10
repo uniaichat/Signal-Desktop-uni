@@ -13,9 +13,10 @@ const log = createLogger('uniNode');
 type OpenParams = {
   windowId: string;
   token: string | null;
-  windowName: string | null;
+  windowName: string | undefined;
   type: string | null;
   channel: string | null;
+  targeturl: string | null;
 };
 
 let openParams: OpenParams | undefined;
@@ -25,6 +26,24 @@ let isUniDeleteQuitting = false;
 export const getOpenParams = () => openParams;
 export const getAllWindowMap = () => allWindowMap;
 export const getIsUniDeleteQuitting = () => isUniDeleteQuitting;
+let onOpenSignalRoute:
+    | undefined
+    | ((params: {
+        windowId: string;
+        windowName?: string;
+        type?: string;
+        targeturl?: string;
+    }) => void);
+export const setOpenSignalRouteHandler = (
+    handler: (params: {
+        windowId: string;
+        windowName?: string;
+        type?: string;
+        targeturl?: string;
+    }) => void
+) => {
+    onOpenSignalRoute = handler;
+}
 
 const isDeleteRoute = (params?: OpenParams | null) => params?.type === 'del';
 
@@ -53,9 +72,10 @@ const parseUniRoute = (input: string): OpenParams | null => {
     return {
       windowId,
       token: url.searchParams.get('token'),
-      windowName: url.searchParams.get('windowName'),
+      windowName: url.searchParams.get('windowName') || undefined,
       type: url.searchParams.get('type'),
       channel: url.searchParams.get('ch'),
+      targeturl: url.searchParams.get('targeturl')
     };
     // return {        
     //     windowId : '11103',
@@ -225,7 +245,6 @@ const _initUniApp = () => {
     if (!params) {
       return;
     }
-
     // 同一个 profile 的删除指令会送达到已运行实例，这里直接退出目标实例。
     if (isDeleteRoute(params) && openParams?.windowId === params.windowId) {
       quitCurrentUniInstance('second-instance delete route', params);
@@ -233,6 +252,10 @@ const _initUniApp = () => {
     }
 
     focusWindowByParams(params);
+    if (params.type === 'opensignal' && params.targeturl) {
+        onOpenSignalRoute?.(params);
+    }
+
   });
 
   // `type=del` 且当前进程成功拿到锁，说明目标 profile 当前并没有运行。

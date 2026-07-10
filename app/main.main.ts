@@ -32,7 +32,7 @@ import {
 import type { MenuItemConstructorOptions, Settings } from 'electron';
 import { z } from 'zod';
 
-import { getAllWindowMap, getOpenParams } from '../ts/uni/uni.node.ts';
+import { getAllWindowMap, getOpenParams, setOpenSignalRouteHandler } from '../ts/uni/uni.node.ts';
 import { packageJson } from '../ts/util/packageJson.main.ts';
 import * as GlobalErrors from './global_errors.main.ts';
 import { setup as setupCrashReports } from './crashReports.main.ts';
@@ -258,54 +258,47 @@ function showWindow() {
   }
 }
 
-// if (!process.mas) {
-//   log.info('making app single instance');
-//   const gotLock = app.requestSingleInstanceLock();
-//   if (!gotLock) {
-//     log.info('quitting; we are the second instance');
-//     app.exit();
-//   } else {
-//     app.on('second-instance', (_e: Electron.Event, argv: Array<string>) => {
-//       // Workaround to let AllowSetForegroundWindow succeed.
-//       // See https://www.npmjs.com/package/@signalapp/windows-dummy-keystroke for a full explanation of why this is needed.
-//       if (OS.isWindows()) {
-//         sendDummyKeystroke();
-//       }
+if (!process.mas) {
+  // 只恢复协议回调处理，不在这里重新接管单实例锁，避免和 spk 多开逻辑冲突。
+  app.on('second-instance', (_e: Electron.Event, argv: Array<string>) => {
+    // Workaround to let AllowSetForegroundWindow succeed.
+    // See https://www.npmjs.com/package/@signalapp/windows-dummy-keystroke for a full explanation of why this is needed.
+    if (OS.isWindows()) {
+      sendDummyKeystroke();
+    }
 
-//       // Someone tried to run a second instance, we should focus our window
-//       if (mainWindow) {
-//         if (mainWindow.isMinimized()) {
-//           mainWindow.restore();
-//         }
+    const route = maybeGetIncomingSignalRoute(argv);
+    if (route == null) {
+      return;
+    }
 
-//         showWindow();
-//       }
+    if (mainWindow == null || !mainWindow.webContents) {
+      macInitialOpenUrlRoute = route;
+      return;
+    }
 
-//       const route = maybeGetIncomingSignalRoute(argv);
-//       if (route != null) {
-//         handleSignalRoute(route);
-//       }
-//       return true;
-//     });
+    handleSignalRoute(route);
+  });
 
-//     // This event is received in macOS packaged builds.
-//     app.on('open-url', (event, incomingHref) => {
-//       event.preventDefault();
-//       const route = parseSignalRoute(incomingHref);
+  // This event is received in macOS packaged builds.
+  app.on('open-url', (event, incomingHref) => {
+    event.preventDefault();
+    const route = parseSignalRoute(incomingHref);
 
-//       if (route != null) {
-//         // When the app isn't open and you click a signal link to open the app, then
-//         // this event will emit before mainWindow is ready. We save the value for later.
-//         if (mainWindow == null || !mainWindow.webContents) {
-//           macInitialOpenUrlRoute = route;
-//           return;
-//         }
+    if (route == null) {
+      return;
+    }
 
-//         handleSignalRoute(route);
-//       }
-//     });
-//   }
-// }
+    // When the app isn't open and you click a signal link to open the app, then
+    // this event will emit before mainWindow is ready. We save the value for later.
+    if (mainWindow == null || !mainWindow.webContents) {
+      macInitialOpenUrlRoute = route;
+      return;
+    }
+
+    handleSignalRoute(route);
+  });
+}
 
 let sqlInitTimeStart = 0;
 let sqlInitTimeEnd = 0;
@@ -528,7 +521,7 @@ async function handleUrl(rawTarget: string) {
   const { protocol } = parsedUrl;
   const isDevServer = process.env.SIGNAL_ENABLE_HTTP;
 
-  if ((protocol === 'http:' || protocol === 'https:') && !isDevServer) {
+  if ((protocol === 'http:' || protocol === 'https:' || protocol === 'unisignalopen:') && !isDevServer) {
     try {
       await shell.openExternal(rawTarget);
     } catch (error) {
@@ -3135,6 +3128,23 @@ function handleSignalRoute(route: ParsedSignalRoute) {
     mainWindow.webContents.send('unknown-sgnl-link');
   }
 }
+
+
+
+setOpenSignalRouteHandler(params => {
+  log.info('params.targeturl-------------------++++++++-',params.targeturl)
+  if (params.type !== 'opensignal' || !params.targeturl) {
+    return;
+  }
+  log.info('params.targeturl--------------------',params.targeturl)
+  const route = parseSignalRoute(params.targeturl);
+  if (route == null) {
+    log.warn('setOpenSignalRouteHandler: invalid targeturl', params.targeturl);
+    return;
+  }
+
+  handleSignalRoute(route);
+});
 
 ipc.handle('install-sticker-pack', (_event, packId, packKeyHex) => {
   const packKey = Buffer.from(packKeyHex, 'hex').toString('base64');
