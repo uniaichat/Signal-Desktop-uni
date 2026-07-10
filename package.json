@@ -346,48 +346,30 @@
   "build": {
     "appId": "org.whispersystems.signal-desktop",
     "nativeRebuilder": "parallel",
+    
     "mac": {
       "artifactName": "${name}-mac-${arch}-${version}.${ext}",
-      "category": "public.app-category.social-networking",
-      "darkModeSupport": true,
-      "hardenedRuntime": true,
-      "entitlements": "./build/entitlements.mac.plist",
-      "entitlementsInherit": "./build/entitlements.mac.inherit.plist",
       "icon": "build/icons/mac/AppIcon.icon",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "identity": null,
+      "sign": false,
+      "strictVerify": false,
       "publish": [
         {
           "provider": "generic",
-          "url": "https://updates.signal.org/desktop"
+          "url": ""
         }
       ],
-      "mergeASARs": true,
-      "sign": "scripts/sign-macos.mjs",
-      "signInstaller": "scripts/sign-mas-installer.mjs",
-      "releaseInfo": {
-        "vendor": {
-          "minOSVersion": "21.0.1"
-        }
-      },
-      "singleArchFiles": "node_modules/{@signalapp,@indutny}/{libsignal-client/prebuilds/**,ringrtc/build/**,sqlcipher/prebuilds/**,mac-screen-share/prebuilds/**}",
       "target": [
         {
-          "target": "zip",
+          "target": "dmg",
           "arch": [
             "x64",
             "arm64"
           ]
-        },
-        {
-          "target": "dmg",
-          "arch": [
-            "universal"
-          ]
         }
-      ],
-      "bundleVersion": "1",
-      "extendInfo": {
-        "NSAutoFillRequiresTextContentTypeForOneTimeCodeOnMac": true
-      }
+      ]
     },
     "dmg": {
       "title": "${productName} Installer",
@@ -532,13 +514,10 @@
       "name": "sgnl-url-scheme",
       "schemes": [
         "sgnl",
-        "signalcaptcha"
+        "signalcaptcha",
+        "spksgnl"
       ]
     },
-    "artifactBuildCompleted": "scripts/artifact-build-completed.mjs",
-    "afterSign": "scripts/after-sign.mjs",
-    "afterPack": "scripts/after-pack.mjs",
-    "afterAllArtifactBuild": "scripts/after-all-artifact-build.mjs",
     "asar": {
       "smartUnpack": false
     },
