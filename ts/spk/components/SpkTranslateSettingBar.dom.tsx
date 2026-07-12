@@ -7,7 +7,7 @@ import { SpkTranslateSettingGlobalModal } from './SpkTranslateSettingGlobalModal
 import { Select } from '../../components/Select.dom';
 import { spkStore } from '../spk.store';
 const styleName = {
-    bar:tw('flex items-center h-[30px]'),
+    bar:tw('flex items-center h-[30px] mt-[30px]'),
     item:tw('flex items-center mx-2 whitespace-nowrap text-[12px]'),
 }
 export function SpkTranslateSettingBar({chatId}:any){

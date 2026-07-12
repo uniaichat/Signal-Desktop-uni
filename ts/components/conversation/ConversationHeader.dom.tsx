@@ -323,10 +323,10 @@ export const ConversationHeader = memo(function ConversationHeader({
       <div
         className={tw(
           '@container flex flex-col shadow-elevation-1 shadow-no-outline'
-        )}
+        )} style={{'height':'48px'}}
       >
         <AxoDragRegion.Root>
-          <div className="module-ConversationHeader">
+          <div className="module-ConversationHeader" style={{'paddingTop':'0'}}>
             <HeaderContent
               conversation={conversation}
               badge={badge ?? null}
