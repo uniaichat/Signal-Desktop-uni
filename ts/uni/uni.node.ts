@@ -4,6 +4,7 @@ import { dirname, join } from 'node:path';
 
 import { app, ipcMain } from 'electron';
 import fetch from 'node-fetch';
+import FormData from 'form-data';
 
 import { createLogger } from '../logging/log.std';
 import { TranslationCache } from './uni.node.sql';
@@ -329,9 +330,29 @@ ipcMain.handle('uni-fetch', async (_event, payload) => {
         'token': openParams?.token ?? '',
         ...headers,
     }
-    if (payload.headers["content-type"]?.includes("json")) {
-        payload.body = JSON.stringify(payload.body)
-    }
+      if (url.includes('translationSpeechZzz')) {
+          const { fileName, type, buffer, languageCode, channel } = payload.body;
+          const fileBuffer = ArrayBuffer.isView(buffer)
+              ? Buffer.from(buffer.buffer, buffer.byteOffset, buffer.byteLength)
+              : Buffer.from(buffer);
+          if (fileBuffer.length === 0) {
+              throw new Error('Cannot translate an empty audio attachment');
+          }
+          const form = new FormData();
+          form.append('file', fileBuffer, {
+              filename: fileName,
+              contentType: type,
+          });
+          form.append('languageCode', languageCode);
+          form.append('channel', channel);
+          payload.body = form;
+          payload.headers = {
+              ...payload.headers,
+              ...form.getHeaders(),
+          };
+      } else if (payload.headers["content-type"]?.includes("json")) {
+          payload.body = JSON.stringify(payload.body)
+      }
     if (Object.keys(payload.params || {}).length) {
         url += `${url.includes('?') ? '&' : '?'}${(new URLSearchParams(payload.params)).toString()}`;
     }

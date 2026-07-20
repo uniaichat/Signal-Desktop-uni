@@ -25,6 +25,7 @@ import { useComputePeaks } from '../../hooks/useComputePeaks.dom.ts';
 import { durationToPlaybackText } from '../../util/durationToPlaybackText.std.ts';
 import { shouldNeverBeCalled } from '../../util/shouldNeverBeCalled.std.ts';
 import { formatFileSize } from '../../util/formatFileSize.std.ts';
+import { UniTranslateMessageAudio } from '../../uni/components/UniTranslateMessageAudio.dom.tsx';
 
 const { noop } = lodash;
 
@@ -412,6 +413,14 @@ export function MessageAudio(props: Props): JSX.Element {
         {waveform}
       </div>
       {metadata}
+      {audioUrl ? (
+        <UniTranslateMessageAudio
+          url={audioUrl}
+          direction={direction}
+          contentType={attachment.contentType}
+          fileName={attachment.fileName}
+        />
+      ) : null}
     </div>
   );
 }

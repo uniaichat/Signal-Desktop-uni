@@ -2,6 +2,18 @@ import { createStore } from 'redux';
 import { LOCA_STORAGE_KEY } from './uni.constant';
 const translateConfigGlobalCache = localStorage.getItem(LOCA_STORAGE_KEY.GLOBAL_CONFIG)
 const translateConfigChatCache = localStorage.getItem(LOCA_STORAGE_KEY.CHAT_CONFIG)
+const defaultTranslateConfigGlobal = {
+  curServer: '',
+  curChannel: '',
+  fontReceiveColor: '#0e9220',
+  fontSendColor: '#0e9220',
+  fontSize: '14',
+  sendTranslate: true,
+  receiveTranslate: true,
+  reverseTranslation: true,
+  formLang: 'ChineseSimplified',
+  toLang: 'English',
+};
 const initialState = {
     userInfo:{},
     serverList : [],
@@ -9,17 +21,11 @@ const initialState = {
     langMap:{},
     channelList:[],
     fontSizeList:[{value:12,text:'12px'},{value:14,text:'14px'},{value:16,text:'16px'},{value:18,text:'18px'}],
-    translateConfigGlobal:translateConfigGlobalCache ? JSON.parse(translateConfigGlobalCache) : {
-        curServer:'',
-        curChannel:'',
-        fontReceiveColor: '#0e9220',
-        fontSendColor: '#0e9220',
-        fontSize:'14',
-        sendTranslate:true,
-        receiveTranslate:true,
-        reverseTranslation:true,
-        formLang:'ChineseSimplified',
-        toLang:'English'
+    translateConfigGlobal: {
+      ...defaultTranslateConfigGlobal,
+      ...(translateConfigGlobalCache
+        ? JSON.parse(translateConfigGlobalCache)
+        : {}),
     },
     translateConfigChat:JSON.parse(translateConfigChatCache || '{}'),
     curChat:{}
