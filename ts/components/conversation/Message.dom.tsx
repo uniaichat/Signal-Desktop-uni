@@ -2446,6 +2446,7 @@ export class Message extends PureComponent<Props, State> {
       deletedForEveryone,
       direction,
       displayLimit,
+      conversationId,
       i18n,
       id,
       isSpoilerExpanded,
@@ -2455,6 +2456,7 @@ export class Message extends PureComponent<Props, State> {
       showConversation,
       showSpoiler,
       status,
+      timestamp,
 
       textAttachment,
     } = this.props;
@@ -2530,7 +2532,15 @@ export class Message extends PureComponent<Props, State> {
             textAttachment={textAttachment}
           />
         )}
-        {uniStore.getState()?.userInfo?.customerId && <UniTranslateMessage text={text || ''} direction={direction}/>}
+        {uniStore.getState()?.userInfo?.customerId && (
+          <UniTranslateMessage
+            conversationId={conversationId}
+            direction={direction}
+            messageId={id}
+            text={text || ''}
+            timestamp={timestamp}
+          />
+        )}
         {this.#getMetadataPlacement() === MetadataPlacement.InlineWithText && (
           <MessageTextMetadataSpacer metadataWidth={metadataWidth} />
         )}

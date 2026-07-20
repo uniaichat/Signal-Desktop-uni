@@ -947,6 +947,22 @@ export const CompositionArea = memo(function CompositionArea({
   ]);
 
   useEscapeHandling(handleEscape);
+
+  useEffect(() => {
+    const handleAiReply = (event: Event) => {
+      const detail = (
+        event as CustomEvent<{ conversationId: string; text: string }>
+      ).detail;
+      if (!detail || detail.conversationId !== conversationId) {
+        return;
+      }
+      inputApiRef.current?.setContents(detail.text, undefined, true);
+      inputApiRef.current?.focus();
+    };
+    window.addEventListener('uni-ai-reply', handleAiReply);
+    return () => window.removeEventListener('uni-ai-reply', handleAiReply);
+  }, [conversationId]);
+
   
   const [reverseTranslateText, setReverseTranslateText] = useState('');
   const handleReverseTranslation = async (text:any)=>{
@@ -1387,6 +1403,7 @@ export const CompositionArea = memo(function CompositionArea({
           onSendPoll={handleSendPoll}
         />
       )}
+
       
     {uniStore.getState().translateConfigGlobal.reverseTranslation &&
       reverseTranslateText && (

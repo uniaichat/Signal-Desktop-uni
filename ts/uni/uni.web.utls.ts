@@ -49,7 +49,7 @@ export const uniUtils = {
     const result = await uniHttpApi.translateAudio({ body });
     if (result.code === 200) {
       return {
-        translation:result.data,
+        translation: result.data,
       };
     }
     return result;
@@ -105,7 +105,7 @@ export const uniUtils = {
   },
   invertHex(hexs: String) {
     const normalizedHex =
-    typeof hexs === 'string' && hexs.length > 0 ? hexs : '#0e9220';
+      typeof hexs === 'string' && hexs.length > 0 ? hexs : '#0e9220';
     let hex = normalizedHex.replace('#', '');
     if (hex.length === 3)
       hex = hex
@@ -132,6 +132,12 @@ export const uniUtils = {
   },
 };
 export const uniHttpApi = {
+  aiReply: (data: any) =>
+    uniUtils.fetch({
+      method: 'POST',
+      url: `client/chat/qywy`,
+      body: data,
+    }),
   translate: (data: any) =>
     uniUtils.fetch({
       method: 'POST',
