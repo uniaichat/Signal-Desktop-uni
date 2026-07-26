@@ -218,7 +218,7 @@ export const createTemplate = (
       ],
     },
     {
-      label: '8.17.1',
+      label: '8.17.2',
       role: 'window',
     },
   ];

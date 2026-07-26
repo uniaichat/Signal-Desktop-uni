@@ -148,7 +148,10 @@ const getMacAppBundlePath = () => {
 const launchMacInstanceWithRoute = (incomingHref: string) => {
   const appBundlePath = getMacAppBundlePath();
   if (!appBundlePath) {
-    log.warn('Unable to relaunch another macOS instance for route', incomingHref);
+    log.warn(
+      'Unable to relaunch another macOS instance for route',
+      incomingHref
+    );
     return false;
   }
 
@@ -324,7 +327,13 @@ ipcMain.handle('spk-fetch', async (_event, payload) => {
 
   if (url.includes('uploadWav')) {
     const { fileName, type, buffer } = payload.body;
-    const fileBuffer = Buffer.from(buffer);
+    const fileBuffer = ArrayBuffer.isView(buffer)
+      ? Buffer.from(buffer.buffer, buffer.byteOffset, buffer.byteLength)
+      : Buffer.from(buffer);
+
+    if (fileBuffer.length === 0) {
+      throw new Error('Cannot translate an empty audio attachment');
+    }
 
     const form = new FormData();
     form.append('file', fileBuffer, {
@@ -349,10 +358,7 @@ ipcMain.handle('spk-fetch', async (_event, payload) => {
 
   const request = new Request(url, payload);
 
-  log.info(
-    'spk-fetch-request-headers',
-    Array.from(request.headers.entries())
-  );
+  log.info('spk-fetch-request-headers', Array.from(request.headers.entries()));
 
   const res = await fetch(request);
   const result = await res.json();
