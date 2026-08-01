@@ -17,7 +17,7 @@
   "scripts": {
     "postinstall": "pnpm run build:acknowledgments && pnpm run electron:install-app-deps",
     "postuninstall": "pnpm run build:acknowledgments",
-    "start": "electron . unisgnl://openNewApp?windowId=11103",
+    "start": "electron . spksgnl://openNewApp?windowId=2000",
     "generate": "run-s generate:phase-0 generate:phase-1",
     "generate:phase-0": "run-s build:protobuf build:emoji-data build:rolldown:prod",
     "generate:phase-1": "run-p --aggregate-output --print-label build:icu-types build:compact-locales build:styles:prod get-expire-time build:policy-files build:db-schema",
@@ -346,9 +346,10 @@
   "build": {
     "appId": "org.whispersystems.signal-desktop",
     "nativeRebuilder": "parallel",
+    
     "mac": {
       "artifactName": "${name}-mac-${arch}-${version}.${ext}",
-      "icon": "build/icons/mac/icon.icns",
+      "icon": "build/icons/mac/AppIcon.icon",
       "hardenedRuntime": false,
       "gatekeeperAssess": false,
       "identity": null,
@@ -367,6 +368,29 @@
             "x64",
             "arm64"
           ]
+        }
+      ]
+    },
+    "dmg": {
+      "title": "${productName} Installer",
+      "background": "build/dmg/background.tiff",
+      "icon": "build/dmg/icon.icns",
+      "iconSize": 96,
+      "window": {
+        "width": 540,
+        "height": 394
+      },
+      "contents": [
+        {
+          "type": "file",
+          "x": 152,
+          "y": 161
+        },
+        {
+          "path": "/Applications",
+          "type": "link",
+          "x": 368,
+          "y": 161
         }
       ]
     },
