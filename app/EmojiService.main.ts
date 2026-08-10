@@ -4,7 +4,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import * as z from 'zod';
-import { protocol } from 'electron';
+import { protocol, type Protocol } from 'electron';
 import { LRUCache } from 'lru-cache';
 
 import type { OptionalResourceService } from './OptionalResourceService.main.ts';
@@ -41,8 +41,14 @@ export class EmojiService {
     manifest: ManifestType
   ) {
     this.#resourceService = resourceService;
+    this.#populateEmojiMap(manifest);
+  }
 
-    protocol.handle('emoji', async req => {
+  public install(targetProtocol: Protocol = protocol): void {
+    if (targetProtocol.isProtocolHandled('emoji')) {
+      return;
+    }
+    targetProtocol.handle('emoji', async req => {
       const url = new URL(req.url);
       const emoji = url.searchParams.get('emoji');
       if (emoji == null || !Emoji.isEmoji(emoji)) {
@@ -51,7 +57,9 @@ export class EmojiService {
 
       return this.#fetch(Emoji.ignorePreferredSkinTone(emoji));
     });
+  }
 
+  #populateEmojiMap(manifest: ManifestType): void {
     for (const [sheet, emojiList] of Object.entries(manifest)) {
       for (const utf16 of emojiList) {
         if (Emoji.isEmoji(utf16)) {
@@ -70,7 +78,9 @@ export class EmojiService {
     const contents = await readFile(MANIFEST_PATH, 'utf8');
     const json: unknown = JSON.parse(contents);
     const manifest = parseUnknown(manifestSchema, json);
-    return new EmojiService(resourceService, manifest);
+    const service = new EmojiService(resourceService, manifest);
+    service.install();
+    return service;
   }
 
   async #fetch(emoji: Emoji.Variant): Promise<Response> {

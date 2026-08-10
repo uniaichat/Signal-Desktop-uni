@@ -9,7 +9,6 @@ import { readFileSync } from 'node:fs';
 import { createLogger } from '../ts/logging/log.std.ts';
 import type { LocalizerType } from '../ts/types/I18N.std.ts';
 import { getAppRootDir } from '../ts/util/appRootDir.main.ts';
-import { getOpenParams } from '../ts/uni/uni.node.ts';
 
 const log = createLogger('SystemTrayService');
 
@@ -139,10 +138,6 @@ export class SystemTrayService {
 
     this.#tray ??= this.#createTray();
     const tray = this.#tray;
-    const openParams = getOpenParams()
-    if(openParams?.windowName){
-      tray.setToolTip(openParams.windowName)
-    }
     const browserWindow = this.#browserWindow;
 
     try {
@@ -190,7 +185,7 @@ export class SystemTrayService {
         },
         {
           id: 'quit',
-          label: this.#i18n('icu:quit') + (getOpenParams()?.windowName || ''),
+          label: this.#i18n('icu:quit'),
           click: () => {
             log.info(
               'System tray service: quitting the app from the context menu'

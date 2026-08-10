@@ -32,7 +32,6 @@ import {
 import type { MenuItemConstructorOptions, Settings } from 'electron';
 import { z } from 'zod';
 
-import { getAllWindowMap, getOpenParams, setOpenSignalRouteHandler } from '../ts/uni/uni.node.ts';
 import { packageJson } from '../ts/util/packageJson.main.ts';
 import * as GlobalErrors from './global_errors.main.ts';
 import { setup as setupCrashReports } from './crashReports.main.ts';
@@ -521,7 +520,7 @@ async function handleUrl(rawTarget: string) {
   const { protocol } = parsedUrl;
   const isDevServer = process.env.SIGNAL_ENABLE_HTTP;
 
-  if ((protocol === 'http:' || protocol === 'https:' || protocol === 'unisignalopen:') && !isDevServer) {
+  if ((protocol === 'http:' || protocol === 'https:') && !isDevServer) {
     try {
       await shell.openExternal(rawTarget);
     } catch (error) {
@@ -766,19 +765,6 @@ async function createWindow() {
 
   // Create the browser window.
   mainWindow = new BrowserWindow(windowOptions);
-  const openParams: any = getOpenParams();
-  const uniWindowMap = getAllWindowMap();
-  const uniWindowId = openParams?.windowId ? String(openParams.windowId) : null;
-  if (uniWindowId) {
-    uniWindowMap.set(uniWindowId, mainWindow);
-  }
-  if (openParams?.windowName) {
-    mainWindow.setTitle(`unichatSiganl-${openParams.windowName}`);
-  } else {
-    mainWindow.setTitle('unichatSiganl');
-  }
-  log.info('registered uni main window', openParams, [...uniWindowMap.keys()]);
-
   if (settingsChannel) {
     settingsChannel.setMainWindow(mainWindow);
   }
@@ -982,9 +968,6 @@ async function createWindow() {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     log.info('main window closed event');
-    if (uniWindowId) {
-      uniWindowMap.delete(uniWindowId);
-    }
     mainWindow = undefined;
     if (settingsChannel) {
       settingsChannel.setMainWindow(mainWindow);
@@ -2691,17 +2674,6 @@ if (!app.isDefaultProtocolClient('signalcaptcha')) {
     'signal is already registered as the default app for the sgnl url scheme.'
   );
 }
-if (!app.isDefaultProtocolClient('unisgnl')) {
-  log.info(
-    'setting signal as the default app for the unisgnl url scheme'
-  );
-  app.setAsDefaultProtocolClient('unisgnl');
-} else {
-  log.info(
-    'signal is already registered as the default app for the sgnl url scheme.'
-  );
-}
-
 ipc.on(
   'set-badge',
   (_event: Electron.Event, badge: number | 'marked-unread') => {
@@ -2899,10 +2871,9 @@ ipc.on('get-config', async event => {
       )}`
     );
   }
-  const openParams = getOpenParams()
   const parsed = safeParseLoose(rendererConfigSchema, {
     name: packageJson.productName,
-    windowName : openParams?.channel ? `${openParams?.channel}Siganl-${openParams?.windowName}-${packageJson.version}` : packageJson.productName,
+    windowName: packageJson.productName,
     availableLocales: getResolvedMessagesLocale().availableLocales,
     resolvedTranslationsLocale: getResolvedMessagesLocale().name,
     resolvedTranslationsLocaleDirection: getResolvedMessagesLocale().direction,
@@ -3128,23 +3099,6 @@ function handleSignalRoute(route: ParsedSignalRoute) {
     mainWindow.webContents.send('unknown-sgnl-link');
   }
 }
-
-
-
-setOpenSignalRouteHandler(params => {
-  log.info('params.targeturl-------------------++++++++-',params.targeturl)
-  if (params.type !== 'opensignal' || !params.targeturl) {
-    return;
-  }
-  log.info('params.targeturl--------------------',params.targeturl)
-  const route = parseSignalRoute(params.targeturl);
-  if (route == null) {
-    log.warn('setOpenSignalRouteHandler: invalid targeturl', params.targeturl);
-    return;
-  }
-
-  handleSignalRoute(route);
-});
 
 ipc.handle('install-sticker-pack', (_event, packId, packKeyHex) => {
   const packKey = Buffer.from(packKeyHex, 'hex').toString('base64');

@@ -3,7 +3,7 @@
 
 import { createReadStream } from 'node:fs';
 import { join } from 'node:path';
-import { protocol } from 'electron';
+import { protocol, type Protocol } from 'electron';
 
 import type { OptionalResourceService } from './OptionalResourceService.main.ts';
 import { getAppRootDir } from '../ts/util/appRootDir.main.ts';
@@ -42,8 +42,13 @@ export class AssetService {
 
   private constructor(resourceService: OptionalResourceService) {
     this.#resourceService = resourceService;
+  }
 
-    protocol.handle('asset', async req => {
+  public install(targetProtocol: Protocol = protocol): void {
+    if (targetProtocol.isProtocolHandled('asset')) {
+      return;
+    }
+    targetProtocol.handle('asset', async req => {
       const url = new URL(req.url);
 
       try {
@@ -56,7 +61,9 @@ export class AssetService {
   }
 
   public static create(resourceService: OptionalResourceService): AssetService {
-    return new AssetService(resourceService);
+    const service = new AssetService(resourceService);
+    service.install();
+    return service;
   }
 
   async #fetch(pathname: string): Promise<Response> {

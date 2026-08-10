@@ -1,0 +1,25 @@
+<!-- Copyright 2026 Signal Messenger, LLC -->
+<!-- SPDX-License-Identifier: AGPL-3.0-only -->
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self' bundles:; style-src 'self'; img-src 'self' data:;"
+    />
+    <meta
+      content="width=device-width, initial-scale=1, user-scalable=no"
+      name="viewport"
+    />
+    <title>Signal</title>
+    <link href="../../../stylesheets/uni/signal-shell.css" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- 这里只承载 React 管理壳；Signal 本体由主进程以 WebContentsView 放在左侧栏右边。 -->
+    <main id="shell-root"></main>
+    <!-- 构建入口定义在 rolldown.config.ts 的 dom/shell。 -->
+    <script src="../../../bundles/dom/shell.js" type="module"></script>
+  </body>
+</html>

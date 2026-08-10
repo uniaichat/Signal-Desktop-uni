@@ -19,13 +19,8 @@ export const SmartCaptchaDialog = memo(function SmartCaptchaDialog({
 }: SmartCaptchaDialogProps) {
   const i18n = useSelector(getIntl);
   const isPending = useSelector(isChallengePending);
-  const handleContinue = useCallback(async () => {
-    let url = getChallengeURL('chat');
-    let config = window.uniIpc?.getConfig ? await window.uniIpc.getConfig() : null;
-
-    if(config?.windowId){
-      url = 'unisignalopen://' + encodeURIComponent(url + `?windowId=${config.windowId}`) 
-    }
+  const handleContinue = useCallback(() => {
+    const url = getChallengeURL('chat');
     log.info(`navigating to ${url}`);
     document.location.href = url;
   }, []);

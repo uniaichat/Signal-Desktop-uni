@@ -1,0 +1,284 @@
+/* Copyright 2026 Signal Messenger, LLC */
+/* SPDX-License-Identifier: AGPL-3.0-only */
+
+:root {
+  color-scheme: light dark;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#shell-root {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #f6f6f6;
+  color: #1b1b1b;
+}
+
+button {
+  font: inherit;
+}
+
+.SignalShell {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.SignalShell__sidebar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  width: 260px;
+  min-width: 260px;
+  flex-direction: column;
+  border-inline-end: 1px solid rgb(0 0 0 / 10%);
+  background: #fff;
+}
+
+.SignalShell__header {
+  display: flex;
+  min-height: 76px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px 12px 18px;
+  border-block-end: 1px solid rgb(0 0 0 / 8%);
+  -webkit-app-region: drag;
+}
+
+.SignalShell__brand {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.SignalShell__subtitle {
+  margin-block-start: 2px;
+  color: #777;
+  font-size: 12px;
+}
+
+.SignalShell__createButton {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 9px;
+  background: #2c6bed;
+  color: #fff;
+  cursor: pointer;
+  font-size: 24px;
+  line-height: 1;
+  -webkit-app-region: no-drag;
+}
+
+.SignalShell__profileList {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  padding: 10px 8px;
+}
+
+.SignalShell__profile {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  border-radius: 10px;
+}
+
+.SignalShell__profile:hover {
+  background: rgb(0 0 0 / 5%);
+}
+
+.SignalShell__profile--active {
+  background: rgb(44 107 237 / 13%);
+}
+
+.SignalShell__profileSelect {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  padding: 8px;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  text-align: start;
+}
+
+.SignalShell__dragHandle {
+  width: 18px;
+  flex: 0 0 auto;
+  color: #999;
+  cursor: grab;
+  font-size: 14px;
+  letter-spacing: -4px;
+  text-align: center;
+  user-select: none;
+}
+
+.SignalShell__dragHandle:active {
+  cursor: grabbing;
+}
+
+.SignalShell__avatar {
+  position: relative;
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: #2c6bed;
+  color: #fff;
+  font-weight: 700;
+}
+
+.SignalShell__unreadBadge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  min-width: 18px;
+  height: 18px;
+  box-sizing: border-box;
+  border: 2px solid #f6f6f6;
+  border-radius: 9px;
+  padding: 0 4px;
+  background: #d92d20;
+  color: #fff;
+  font-size: 10px;
+  line-height: 14px;
+  text-align: center;
+}
+
+.SignalShell__profileText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.SignalShell__profileName {
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.SignalShell__nameInput {
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #2c6bed;
+  border-radius: 5px;
+  padding: 5px 7px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  outline: none;
+}
+
+.SignalShell__profileState {
+  color: #777;
+  font-size: 12px;
+}
+
+.SignalShell__editButton,
+.SignalShell__deleteButton {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 7px;
+  margin-inline-end: 6px;
+  background: transparent;
+  color: #777;
+  cursor: pointer;
+  font-size: 20px;
+  opacity: 0;
+}
+
+.SignalShell__editButton {
+  font-size: 16px;
+}
+
+.SignalShell__profile:hover .SignalShell__editButton,
+.SignalShell__editButton:focus-visible,
+.SignalShell__profile:hover .SignalShell__deleteButton,
+.SignalShell__deleteButton:focus-visible {
+  opacity: 1;
+}
+
+.SignalShell__deleteButton:hover {
+  background: rgb(180 35 35 / 13%);
+  color: #b42323;
+}
+
+.SignalShell__profileSelect:disabled,
+.SignalShell__editButton:disabled,
+.SignalShell__deleteButton:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.SignalShell__error {
+  margin: 8px;
+  border-radius: 8px;
+  padding: 10px;
+  background: rgb(180 35 35 / 13%);
+  color: #b42323;
+  font-size: 12px;
+}
+
+.SignalShell__workspace {
+  min-width: 0;
+  flex: 1;
+}
+
+.SignalShell__empty {
+  display: grid;
+  height: 100%;
+  place-content: center;
+  gap: 8px;
+  color: #666;
+  text-align: center;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #1b1b1b;
+    color: #f5f5f5;
+  }
+
+  .SignalShell__sidebar {
+    border-inline-end-color: rgb(255 255 255 / 10%);
+    background: #242424;
+  }
+
+  .SignalShell__header {
+    border-block-end-color: rgb(255 255 255 / 8%);
+  }
+
+  .SignalShell__profile:hover {
+    background: rgb(255 255 255 / 6%);
+  }
+
+  .SignalShell__subtitle,
+  .SignalShell__profileState,
+  .SignalShell__deleteButton,
+  .SignalShell__empty {
+    color: #aaa;
+  }
+}

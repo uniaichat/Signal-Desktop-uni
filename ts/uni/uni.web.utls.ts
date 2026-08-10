@@ -55,9 +55,13 @@ export const uniUtils = {
     return result;
   },
   async fetch(config: any) {
+    const configuredServer = uniStore
+      .getState()
+      .translateConfigGlobal.curServer?.trim();
+    const server = configuredServer || 'https://api.uniaichat.com';
     const result = await window.uniIpc.fetch({
       ...config,
-      url: `${uniStore.getState().translateConfigGlobal.curServer}/${config.url}`,
+      url: `${server.replace(/\/$/, '')}/${config.url.replace(/^\//, '')}`,
     });
     console.log(config, '-----', result);
     if (result.code === 400) {
@@ -164,5 +168,10 @@ export const uniHttpApi = {
     uniUtils.fetch({
       method: 'GET',
       url: `client/translate/channels`,
+    }),
+  getUserData: () =>
+    uniUtils.fetch({
+      method: 'GET',
+      url: `client/customerDetail`,
     }),
 };

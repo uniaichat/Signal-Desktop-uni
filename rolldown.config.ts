@@ -48,6 +48,7 @@ const sandboxPreload = {
   'preload/permissions': 'ts/windows/permissions/preload.preload.ts',
   'preload/screenShare': 'ts/windows/screenShare/preload.preload.ts',
   'preload/sticker-creator': 'ts/windows/sticker-creator/preload.preload.ts',
+  'preload/shell': 'ts/uni/shell/preload.preload.ts',
 };
 
 const sandboxDOM = {
@@ -57,6 +58,7 @@ const sandboxDOM = {
   'dom/loading': 'ts/windows/loading/start.dom.ts',
   'dom/permissions': 'ts/windows/permissions/app.dom.tsx',
   'dom/screenShare': 'ts/windows/screenShare/app.dom.tsx',
+  'dom/shell': 'ts/uni/shell/app.dom.tsx',
 };
 
 const defaults = {
@@ -175,7 +177,7 @@ export default defineConfig([
 
     input: {
       // Main
-      main: 'app/main.main.ts',
+      main: 'app/uni/shell/Shell.main.ts',
       config: 'app/config.main.js',
 
       // Preloads

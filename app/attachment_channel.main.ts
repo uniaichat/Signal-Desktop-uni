@@ -291,7 +291,7 @@ type CleanupOrphanedAttachmentsOptionsType = Readonly<{
   _block?: boolean;
 }>;
 
-async function cleanupOrphanedAttachments({
+export async function cleanupOrphanedAttachments({
   sql,
   userDataPath,
   _block = false,
