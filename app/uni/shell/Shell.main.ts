@@ -34,6 +34,9 @@ import {
 } from '../../protocol_filter.node.ts';
 import OS from '../../../ts/util/os/osMain.node.ts';
 import { packageJson } from '../../../ts/util/packageJson.main.ts';
+import { createLogger } from '../../../ts/logging/log.std.ts';
+
+const log = createLogger('Shell');
 
 const rootDir = getAppRootDir();
 const shellDataPath = join(app.getPath('userData'), 'shell');
@@ -64,6 +67,32 @@ electronProtocol.registerSchemesAsPrivileged([
     },
   },
 ]);
+
+// Do this before taking the single-instance lock. During an install/update an
+// older instance may still be running, but this process should still repair
+// the URL association before it exits.
+if (process.platform === 'win32') {
+  const protocol = 'unisignal';
+  const registered = app.setAsDefaultProtocolClient(
+    protocol,
+    process.execPath
+  );
+  const isDefault = app.isDefaultProtocolClient(protocol, process.execPath);
+
+  if (!registered || !isDefault) {
+    log.error('Failed to register custom URL protocol', {
+      protocol,
+      registered,
+      isDefault,
+      execPath: process.execPath,
+    });
+  } else {
+    log.info('Custom URL protocol is registered', {
+      protocol,
+      execPath: process.execPath,
+    });
+  }
+}
 
 const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) {
@@ -98,8 +127,6 @@ if (!gotLock) {
   });
 
   app.whenReady().then(async () => {
-    app.setAsDefaultProtocolClient('unisignal');
-
     const proxyUrl = await resolveSystemProxyUrl();
     if (proxyUrl && !process.env.HTTPS_PROXY && !process.env.https_proxy) {
       process.env.HTTPS_PROXY = proxyUrl;

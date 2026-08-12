@@ -56,6 +56,23 @@ ManifestDPIAware true
 !macroend
 
 !macro customInstall
+  # Register the custom URL scheme during installation. Relying only on
+  # Electron's setAsDefaultProtocolClient is racy when another app instance
+  # already owns the single-instance lock during an install or update.
+  WriteRegStr SHELL_CONTEXT "Software\Classes\unisignal" "" \
+      "URL:unisignal Protocol"
+  WriteRegStr SHELL_CONTEXT "Software\Classes\unisignal" \
+      "URL Protocol" ""
+  WriteRegStr SHELL_CONTEXT \
+      "Software\Classes\unisignal\DefaultIcon" "" \
+      '"$INSTDIR\${APP_EXECUTABLE_FILENAME}",0'
+  WriteRegStr SHELL_CONTEXT \
+      "Software\Classes\unisignal\shell\open\command" "" \
+      '"$INSTDIR\${APP_EXECUTABLE_FILENAME}" "%1"'
+
+  # Notify Explorer and browsers that URL associations have changed.
+  System::Call 'shell32::SHChangeNotify(i 0x08000000, i 0, p 0, p 0)'
+
   ${If} ${Silent}
   ${AndIf} ${isUpdated}
     # Copied from app-builder-lib templates/nsis/common.nsh:
@@ -71,4 +88,9 @@ ManifestDPIAware true
     HideWindow
     ${StdUtils.ExecShellAsUser} $0 "$launchLink" "open" ""
   ${EndIf}
+!macroend
+
+!macro customUnInstall
+  DeleteRegKey SHELL_CONTEXT "Software\Classes\unisignal"
+  System::Call 'shell32::SHChangeNotify(i 0x08000000, i 0, p 0, p 0)'
 !macroend
