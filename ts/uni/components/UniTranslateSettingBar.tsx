@@ -76,7 +76,6 @@ export function UniTranslateSettingBar({chatId}:any){
             <label>对方语言</label>
             <Select value={curChat.toLang}  moduleClassName="uni-min-select" options={langList} onChange={(toLang)=>handleCurChatConfigChange({toLang})}></Select>  
         </span>
-        <small>8.17.110</small>
       </div>
       {showGlobal && (<UniTranslateSettingGlobalModal onClose={()=>handleTriggerGlobal(false)}/>)}
 

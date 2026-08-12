@@ -15,7 +15,9 @@ import {
 import { ProfileManager } from './ProfileManager.node.ts';
 import type { ProfileRuntime } from './ProfileManager.node.ts';
 
-const SHELL_SIDEBAR_WIDTH = 260;
+const DEFAULT_SHELL_SIDEBAR_WIDTH = 210;
+const MIN_SHELL_SIDEBAR_WIDTH = 160;
+const MAX_SHELL_SIDEBAR_WIDTH = 360;
 
 // Controller 不知道 Signal 后端如何初始化；shell.main.ts 通过该回调注入。
 // 这样 View 管理和 SQL/配置启动逻辑可以分别维护。
@@ -35,6 +37,7 @@ export class ProfileShellController {
   readonly #manager: ProfileManager;
 
   #activeView?: WebContentsView;
+  #sidebarWidth = DEFAULT_SHELL_SIDEBAR_WIDTH;
   // undefined 表示管理壳还没有通过 customerDetail 完成用户身份绑定。
   #currentCustomerId?: string;
 
@@ -103,6 +106,18 @@ export class ProfileShellController {
     ipcMain.handle('uni:shell:list-profiles', event => {
       requireShellSender(event.sender.id);
       return this.#manager.list(this.#requireCustomerId());
+    });
+
+    ipcMain.on('uni:shell:set-sidebar-width', (event, width) => {
+      requireShellSender(event.sender.id);
+      if (typeof width !== 'number' || !Number.isFinite(width)) {
+        return;
+      }
+      this.#sidebarWidth = Math.max(
+        MIN_SHELL_SIDEBAR_WIDTH,
+        Math.min(MAX_SHELL_SIDEBAR_WIDTH, Math.round(width))
+      );
+      this.#resizeActiveView();
     });
 
     ipcMain.handle('uni:shell:create-profile', (event, input) => {
@@ -324,9 +339,9 @@ export class ProfileShellController {
     const [width = 0, height = 0] = this.#shellWindow.getContentSize();
     this.#activeView.setBounds({
       // 左侧 260px 留给 React 管理栏，其余区域全部交给 Signal。
-      x: SHELL_SIDEBAR_WIDTH,
+      x: this.#sidebarWidth,
       y: 0,
-      width: Math.max(0, width - SHELL_SIDEBAR_WIDTH),
+      width: Math.max(0, width - this.#sidebarWidth),
       height,
     });
   }

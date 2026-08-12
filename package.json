@@ -1,12 +1,12 @@
 {
   "$schema": "./package.schema.json",
   "packageManager": "pnpm@11.5.2",
-  "name": "signal-desktop",
-  "productName": "Signal",
+  "name": "signal-my-desktop",
+  "productName": "SignalMy",
   "description": "Private messaging from your desktop",
-  "desktopName": "signal.desktop",
+  "desktopName": "signal.my.desktop",
   "repository": "https://github.com/signalapp/Signal-Desktop.git",
-  "version": "8.17.111",
+  "version": "8.17.2110",
   "license": "AGPL-3.0-only",
   "author": {
     "name": "Signal Messenger, LLC",
@@ -17,7 +17,7 @@
   "scripts": {
     "postinstall": "pnpm run build:acknowledgments && pnpm run electron:install-app-deps",
     "postuninstall": "pnpm run build:acknowledgments",
-    "start": "electron . unisgnl://open?token=xxx",
+    "start": "electron . unisignal://open?token=xxx",
     "generate": "run-s generate:phase-0 generate:phase-1",
     "generate:phase-0": "run-s build:protobuf build:emoji-data build:rolldown:prod",
     "generate:phase-1": "run-p --aggregate-output --print-label build:icu-types build:compact-locales build:styles:prod get-expire-time build:policy-files build:db-schema",
@@ -344,7 +344,7 @@
     "node": "24.15.0"
   },
   "build": {
-    "appId": "org.whispersystems.signal-desktop",
+    "appId": "unichat.signal-my-desktop",
     "nativeRebuilder": "parallel",
     
     "mac": {
@@ -515,7 +515,7 @@
       "schemes": [
         "sgnl",
         "signalcaptcha",
-        "unisgnl"
+        "unisignal"
       ]
     },
     "asar": {

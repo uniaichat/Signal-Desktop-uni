@@ -31,6 +31,7 @@ export type SignalShellApi = Readonly<{
     listener: (state: ReadonlyArray<ProfileNotificationState>) => void
   ): () => void;
   onProfileActivated(listener: (profileId: string) => void): () => void;
+  setSidebarWidth(width: number): void;
 }>;
 
 // shell.html 开启了 contextIsolation 和 sandbox，只暴露管理壳实际需要的三个能力。
@@ -83,6 +84,9 @@ const api: SignalShellApi = {
     return () => {
       ipcRenderer.removeListener('uni:shell:profile-activated', handler);
     };
+  },
+  setSidebarWidth: width => {
+    ipcRenderer.send('uni:shell:set-sidebar-width', width);
   },
 };
 

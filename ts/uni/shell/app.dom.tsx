@@ -1,7 +1,12 @@
 // Copyright 2026 Signal Messenger, LLC
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import type { DragEvent, KeyboardEvent, ReactElement } from 'react';
+import type {
+  DragEvent,
+  KeyboardEvent,
+  PointerEvent,
+  ReactElement,
+} from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 
@@ -40,6 +45,12 @@ function SignalShell(): ReactElement {
   const [unichatUser, setUnichatUser] = useState<UnichatUserState>({
     loading: false,
   });
+  const [sidebarWidth, setSidebarWidth] = useState(() => {
+    const stored = Number(localStorage.getItem('signal-shell-sidebar-width'));
+    return Number.isFinite(stored) && stored >= 160 && stored <= 360
+      ? stored
+      : 210;
+  });
   const signalAllowed = unichatUser.data?.windowNum === -1;
 
   const refreshProfiles = useCallback(async () => {
@@ -63,6 +74,33 @@ function SignalShell(): ReactElement {
     // effect 的返回值，从而移除 ipcRenderer listener，避免内存泄漏和重复回调。
     return window.SignalShell.onUnichatContextChanged(setUnichat);
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('signal-shell-sidebar-width', String(sidebarWidth));
+    window.SignalShell.setSidebarWidth(sidebarWidth);
+  }, [sidebarWidth]);
+
+  const startSidebarResize = useCallback(
+    (event: PointerEvent<HTMLDivElement>) => {
+      event.preventDefault();
+      const startX = event.clientX;
+      const startWidth = sidebarWidth;
+      const onMove = (moveEvent: globalThis.PointerEvent) => {
+        setSidebarWidth(
+          Math.max(160, Math.min(360, startWidth + moveEvent.clientX - startX))
+        );
+      };
+      const onUp = () => {
+        document.removeEventListener('pointermove', onMove);
+        document.removeEventListener('pointerup', onUp);
+        document.body.classList.remove('SignalShell--resizing');
+      };
+      document.body.classList.add('SignalShell--resizing');
+      document.addEventListener('pointermove', onMove);
+      document.addEventListener('pointerup', onUp);
+    },
+    [sidebarWidth]
+  );
 
   useEffect(() => {
     void loadNotificationState();
@@ -167,7 +205,7 @@ function SignalShell(): ReactElement {
     try {
       setErrorMessage(undefined);
       if (!unichatUser.data?.customerId) {
-        throw new Error('请等待 unichat 用户信息加载完成');
+        throw new Error('请等待 翻译器用户信息加载完成');
       }
       if (unichatUser.data.windowNum !== -1) {
         throw new Error(SIGNAL_PLAN_UNAVAILABLE_MESSAGE);
@@ -312,7 +350,10 @@ function SignalShell(): ReactElement {
 
   return (
     <div className="SignalShell">
-      <aside className="SignalShell__sidebar">
+      <aside
+        className="SignalShell__sidebar"
+        style={{ minWidth: sidebarWidth, width: sidebarWidth }}
+      >
         <header className="SignalShell__header">
           <div>
             <div className="SignalShell__brand">
@@ -371,8 +412,8 @@ function SignalShell(): ReactElement {
                 </span>
                 {editingProfileId === id ? (
                   <div className="SignalShell__profileSelect">
-                    <span className="SignalShell__avatar">
-                      {profile.metadata.name.slice(0, 1).toUpperCase()}
+                    <span aria-hidden="true" className="SignalShell__avatar">
+                      S
                     </span>
                     <input
                       aria-label="Signal 账号名称"
@@ -396,17 +437,17 @@ function SignalShell(): ReactElement {
                     onClick={() => void activate(id)}
                     type="button"
                   >
-                    <span className="SignalShell__avatar">
-                      {profile.metadata.name.slice(0, 1).toUpperCase()}
-                      {unreadCount > 0 ? (
-                        <span className="SignalShell__unreadBadge">
-                          {unreadCount > 99 ? '99+' : unreadCount}
-                        </span>
-                      ) : null}
+                    <span aria-hidden="true" className="SignalShell__avatar">
+                      S
                     </span>
                     <span className="SignalShell__profileText">
                       <span className="SignalShell__profileName">
                         {profile.metadata.name}
+                        {unreadCount > 0 ? (
+                          <span className="SignalShell__unreadBadge">
+                            {unreadCount > 99 ? '99+' : unreadCount}
+                          </span>
+                        ) : null}
                       </span>
                       <span className="SignalShell__profileState">
                         {getStateLabel(profile.state, isBusy)}
@@ -449,8 +490,20 @@ function SignalShell(): ReactElement {
         ) : null}
       </aside>
 
+      <div
+        aria-label="调整侧栏宽度"
+        className="SignalShell__resizeHandle"
+        onPointerDown={startSidebarResize}
+        role="separator"
+      />
+
       <main className="SignalShell__workspace">
-        {unichatUser.data && !signalAllowed ? (
+        {!unichat?.isAuthenticated ? (
+          <section className="SignalShell__empty" role="alert">
+            <strong>打开方式错误</strong>
+            <span>请重新点击翻译器主程序中的Signal图标</span>
+          </section>
+        ) : (unichatUser.data && !signalAllowed) ? (
           <section className="SignalShell__empty" role="alert">
             <strong>当前套餐无法使用 Signal，请联系客服</strong>
             <span>套餐更新后，需点击unichat软件里的Signal图标重新启动</span>

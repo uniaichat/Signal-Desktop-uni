@@ -98,7 +98,7 @@ if (!gotLock) {
   });
 
   app.whenReady().then(async () => {
-    app.setAsDefaultProtocolClient('unisgnl');
+    app.setAsDefaultProtocolClient('unisignal');
 
     const proxyUrl = await resolveSystemProxyUrl();
     if (proxyUrl && !process.env.HTTPS_PROXY && !process.env.https_proxy) {
@@ -125,6 +125,7 @@ if (!gotLock) {
       height: 760,
       minWidth: 720,
       minHeight: 520,
+    autoHideMenuBar: true,
       title: getShellWindowTitle(),
       icon: shellWindowIcon,
       backgroundColor: '#f6f6f6',

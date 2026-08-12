@@ -296,9 +296,8 @@ import { saveAndNotify } from './messages/saveAndNotify.preload.ts';
 import { getBackupKeyHash } from './services/backups/crypto.preload.ts';
 import { Emoji } from './axo/emoji.std.ts';
 import { isTrustedContact } from './util/isConversationAccepted.preload.ts';
-import  './uni/uni.preload.ts';
-import  './uni/uni.web.ts';
-
+import './uni/uni.preload.ts';
+import './uni/uni.web.ts';
 
 const { isNumber, throttle } = lodash;
 
