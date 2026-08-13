@@ -437,17 +437,19 @@ function SignalShell(): ReactElement {
                     onClick={() => void activate(id)}
                     type="button"
                   >
-                    <span aria-hidden="true" className="SignalShell__avatar">
-                      S
+                    <span className="SignalShell__avatarContainer">
+                      <span aria-hidden="true" className="SignalShell__avatar">
+                        S
+                      </span>
+                      {unreadCount > 0 ? (
+                        <span className="SignalShell__unreadBadge">
+                          {unreadCount > 99 ? '99+' : unreadCount}
+                        </span>
+                      ) : null}
                     </span>
                     <span className="SignalShell__profileText">
                       <span className="SignalShell__profileName">
                         {profile.metadata.name}
-                        {unreadCount > 0 ? (
-                          <span className="SignalShell__unreadBadge">
-                            {unreadCount > 99 ? '99+' : unreadCount}
-                          </span>
-                        ) : null}
                       </span>
                       <span className="SignalShell__profileState">
                         {getStateLabel(profile.state, isBusy)}
@@ -503,7 +505,7 @@ function SignalShell(): ReactElement {
             <strong>打开方式错误</strong>
             <span>请重新点击翻译器主程序中的Signal图标</span>
           </section>
-        ) : (unichatUser.data && !signalAllowed) ? (
+        ) : unichatUser.data && !signalAllowed ? (
           <section className="SignalShell__empty" role="alert">
             <strong>当前套餐无法使用 Signal，请联系客服</strong>
             <span>套餐更新后，需点击unichat软件里的Signal图标重新启动</span>
