@@ -12,6 +12,7 @@ import {
 } from 'electron';
 
 import { AssetService } from '../../AssetService.main.ts';
+import { installAttachmentProtocol } from '../../attachment_channel.main.ts';
 import { EmojiService } from '../../EmojiService.main.ts';
 import { OptionalResourceService } from '../../OptionalResourceService.main.ts';
 import { ProfileShellController } from '../profile/ProfileShellController.main.ts';
@@ -73,10 +74,7 @@ electronProtocol.registerSchemesAsPrivileged([
 // the URL association before it exits.
 if (process.platform === 'win32') {
   const protocol = 'unisignal';
-  const registered = app.setAsDefaultProtocolClient(
-    protocol,
-    process.execPath
-  );
+  const registered = app.setAsDefaultProtocolClient(protocol, process.execPath);
   const isDefault = app.isDefaultProtocolClient(protocol, process.execPath);
 
   if (!registered || !isDefault) {
@@ -152,7 +150,7 @@ if (!gotLock) {
       height: 760,
       minWidth: 720,
       minHeight: 520,
-    autoHideMenuBar: true,
+      autoHideMenuBar: true,
       title: getShellWindowTitle(),
       icon: shellWindowIcon,
       backgroundColor: '#f6f6f6',
@@ -180,6 +178,13 @@ if (!gotLock) {
         runtime.ephemeralConfig = backend.ephemeralConfig;
         assetService.install(view.webContents.session.protocol);
         emojiService.install(view.webContents.session.protocol);
+        // attachment:// carries message media, contact avatars and installed
+        // sticker files. It must be bound to this Profile session/path; using
+        // Signal's original process-global handler would mix multiple accounts.
+        installAttachmentProtocol(
+          view.webContents.session.protocol,
+          runtime.profilePath
+        );
         installFileHandler({
           session: view.webContents.session,
           userDataPath: runtime.profilePath,

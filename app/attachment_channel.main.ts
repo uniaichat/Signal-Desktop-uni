@@ -7,7 +7,7 @@ import {
   ValidatingPassThrough,
   inferChunkSize,
 } from '@signalapp/libsignal-client/dist/incremental_mac.js';
-import { ipcMain, protocol } from 'electron';
+import { ipcMain, protocol, type Protocol } from 'electron';
 import { LRUCache } from 'lru-cache';
 import { randomBytes } from 'node:crypto';
 import { once } from 'node:events';
@@ -609,6 +609,63 @@ export function initialize({
 }
 
 export async function handleAttachmentRequest(req: Request): Promise<Response> {
+  strictAssert(attachmentsDir != null, 'not initialized');
+  strictAssert(tempDir != null, 'not initialized');
+  strictAssert(downloadsDir != null, 'not initialized');
+  strictAssert(draftDir != null, 'not initialized');
+  strictAssert(stickersDir != null, 'not initialized');
+  strictAssert(avatarDataDir != null, 'not initialized');
+
+  return handleAttachmentRequestForDirectories(req, {
+    attachmentsDir,
+    tempDir,
+    downloadsDir,
+    draftDir,
+    stickersDir,
+    avatarDataDir,
+  });
+}
+
+type AttachmentDirectories = Readonly<{
+  attachmentsDir: string;
+  stickersDir: string;
+  tempDir: string;
+  draftDir: string;
+  downloadsDir: string;
+  avatarDataDir: string;
+}>;
+
+/**
+ * Register attachment:// for one Profile's Electron session.
+ *
+ * The original Signal process has one account, so initialize() can safely keep
+ * its directories in module globals. The management shell hosts several Signal
+ * renderers in one main process; module globals would make all renderers read
+ * whichever Profile initialized last. Binding these directories in a closure
+ * keeps messages, contact avatars, drafts, downloads and stickers isolated.
+ */
+export function installAttachmentProtocol(
+  targetProtocol: Protocol,
+  configDir: string
+): void {
+  const directories: AttachmentDirectories = {
+    attachmentsDir: getAttachmentsPath(configDir),
+    stickersDir: getStickersPath(configDir),
+    tempDir: getTempPath(configDir),
+    draftDir: getDraftPath(configDir),
+    downloadsDir: getDownloadsPath(configDir),
+    avatarDataDir: getAvatarsPath(configDir),
+  };
+
+  targetProtocol.handle('attachment', request =>
+    handleAttachmentRequestForDirectories(request, directories)
+  );
+}
+
+async function handleAttachmentRequestForDirectories(
+  req: Request,
+  directories: AttachmentDirectories
+): Promise<Response> {
   const url = new URL(req.url);
   if (url.host !== 'v1' && url.host !== 'v2') {
     return new Response('Unknown host', { status: 404 });
@@ -621,32 +678,25 @@ export async function handleAttachmentRequest(req: Request): Promise<Response> {
     disposition = parseLoose(dispositionSchema, dispositionParam);
   }
 
-  strictAssert(attachmentsDir != null, 'not initialized');
-  strictAssert(tempDir != null, 'not initialized');
-  strictAssert(downloadsDir != null, 'not initialized');
-  strictAssert(draftDir != null, 'not initialized');
-  strictAssert(stickersDir != null, 'not initialized');
-  strictAssert(avatarDataDir != null, 'not initialized');
-
   let parentDir: string;
   switch (disposition) {
     case 'attachment':
-      parentDir = attachmentsDir;
+      parentDir = directories.attachmentsDir;
       break;
     case 'download':
-      parentDir = downloadsDir;
+      parentDir = directories.downloadsDir;
       break;
     case 'temporary':
-      parentDir = tempDir;
+      parentDir = directories.tempDir;
       break;
     case 'draft':
-      parentDir = draftDir;
+      parentDir = directories.draftDir;
       break;
     case 'sticker':
-      parentDir = stickersDir;
+      parentDir = directories.stickersDir;
       break;
     case 'avatarData':
-      parentDir = avatarDataDir;
+      parentDir = directories.avatarDataDir;
       break;
     default:
       throw missingCaseError(disposition);
