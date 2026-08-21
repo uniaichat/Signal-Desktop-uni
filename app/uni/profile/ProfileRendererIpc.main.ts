@@ -3,7 +3,14 @@
 
 import os from 'node:os';
 
-import { app, ipcMain, nativeTheme } from 'electron';
+import {
+  app,
+  dialog,
+  ipcMain,
+  nativeTheme,
+  type BrowserWindow,
+} from 'electron';
+import { basename, dirname, extname, join } from 'node:path';
 
 import { load as loadLocale } from '../../locale.node.ts';
 import config from '../../config.main.ts';
@@ -27,10 +34,12 @@ export async function installProfileRendererIpc({
   manager,
   proxyUrl,
   rootDir,
+  shellWindow,
 }: {
   manager: ProfileManager;
   proxyUrl?: string;
   rootDir: string;
+  shellWindow: BrowserWindow;
 }): Promise<void> {
   const preferredSystemLocales = app.getPreferredSystemLanguages();
   const locale = loadLocale({
@@ -152,6 +161,42 @@ export async function installProfileRendererIpc({
   ipcMain.handle('crash-reports:get-count', () => 0);
   ipcMain.handle('crash-reports:write-to-log', () => undefined);
   ipcMain.handle('crash-reports:erase', () => undefined);
+  ipcMain.handle('show-save-dialog', async (event, { defaultPath }) => {
+    // Only a registered Signal Profile renderer may open this dialog. The
+    // management shell and unknown webContents cannot use it as a generic file
+    // system bridge.
+    if (!manager.getRuntimeForSender(event.sender.id)) {
+      throw new Error(`No Profile runtime for sender ${event.sender.id}`);
+    }
+    if (typeof defaultPath !== 'string' || defaultPath.length === 0) {
+      throw new TypeError('show-save-dialog requires a defaultPath');
+    }
+
+    const osDefaultPath = OS.isLinuxUsingKDE()
+      ? `~/${defaultPath}`
+      : defaultPath;
+    const { canceled, filePath } = await dialog.showSaveDialog(shellWindow, {
+      defaultPath: osDefaultPath,
+      showsTagField: false,
+    });
+    if (canceled || filePath == null) {
+      return { canceled: true };
+    }
+
+    // Electron may omit the original extension when the user edits the file
+    // name on Windows. Preserve Signal's stock save-dialog behavior.
+    if (extname(filePath) !== '') {
+      return { canceled: false, filePath };
+    }
+    const defaultExt = extname(defaultPath);
+    return {
+      canceled: false,
+      filePath: join(
+        dirname(filePath),
+        `${basename(filePath, defaultExt)}${defaultExt}`
+      ),
+    };
+  });
   ipcMain.handle('settings:get:themeSetting', event => {
     // 界面偏好从各自 ephemeralConfig 读取，避免切换账号时主题/缩放串扰。
     return (

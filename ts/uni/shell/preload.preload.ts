@@ -20,6 +20,8 @@ export type SignalShellApi = Readonly<{
   ): Promise<ReadonlyArray<ProfileSnapshot>>;
   activateProfile(id: string): Promise<void>;
   deleteProfile(id: string): Promise<boolean>;
+  // 只允许选择预定义下载通道；具体 URL 由主进程按系统和 brand 生成。
+  openDownload(channel: 'lanzou' | 'aws'): Promise<void>;
   // 一次性读取协议上下文，供管理壳初始化使用。
   getUnichatContext(): Promise<UnichatContextSnapshot>;
   // 订阅后续协议唤起产生的 token/brand 变化，返回值用于取消订阅。
@@ -47,6 +49,8 @@ const api: SignalShellApi = {
     ipcRenderer.invoke('uni:shell:reorder-profiles', orderedIds),
   activateProfile: id => ipcRenderer.invoke('uni:shell:activate-profile', id),
   deleteProfile: id => ipcRenderer.invoke('uni:shell:delete-profile', id),
+  openDownload: channel =>
+    ipcRenderer.invoke('uni:shell:open-download', channel),
   getUnichatContext: () => ipcRenderer.invoke('uni:shell:get-unichat-context'),
   onUnichatContextChanged: listener => {
     // ipcRenderer 的原始回调包含 Electron event。DOM 层不需要它，因此 preload

@@ -9,6 +9,7 @@ import {
   ipcMain,
   protocol as electronProtocol,
   session,
+  shell as electronShell,
 } from 'electron';
 
 import { AssetService } from '../../AssetService.main.ts';
@@ -36,6 +37,9 @@ import {
 import OS from '../../../ts/util/os/osMain.node.ts';
 import { packageJson } from '../../../ts/util/packageJson.main.ts';
 import { createLogger } from '../../../ts/logging/log.std.ts';
+import { setupWebContents as setupSpellCheckerForWebContents } from '../../spell_check.main.ts';
+import { load as loadLocale } from '../../locale.node.ts';
+import { HourCyclePreference } from '../../../ts/types/I18N.std.ts';
 
 const log = createLogger('Shell');
 
@@ -135,6 +139,15 @@ if (!gotLock) {
     );
     const assetService = AssetService.create(resourceService);
     const emojiService = await EmojiService.create(resourceService);
+    const shellLocale = loadLocale({
+      rootDir,
+      hourCyclePreference: HourCyclePreference.UnknownPreference,
+      isPackaged: app.isPackaged,
+      localeDirectionTestingOverride: null,
+      localeOverride: null,
+      logger: log,
+      preferredSystemLocales: app.getPreferredSystemLanguages(),
+    });
 
     // 所有 Signal Profile 共用一个翻译缓存数据库。
     const translationCache = new SharedTranslationCache(
@@ -165,6 +178,9 @@ if (!gotLock) {
       event.preventDefault();
       shellWindow?.setTitle(getShellWindowTitle());
     });
+    // Capture the initialized window for callbacks below. The module-level
+    // variable remains optional because it is also read before app readiness.
+    const profileHostWindow = shellWindow;
 
     shellController = new ProfileShellController({
       rootDir,
@@ -195,6 +211,14 @@ if (!gotLock) {
           session: view.webContents.session,
           enableHttp: false,
         });
+        setupSpellCheckerForWebContents(
+          view.webContents,
+          profileHostWindow,
+          app.getPreferredSystemLanguages(),
+          null,
+          shellLocale.i18n,
+          log
+        );
         await view.webContents.loadFile(join(rootDir, 'background.html'));
       },
       onProfileRemoved: profileId =>
@@ -229,6 +253,7 @@ if (!gotLock) {
       manager: shellController.manager,
       proxyUrl,
       rootDir,
+      shellWindow,
     });
     await installUniIpc({
       context: unichatContext,
@@ -283,13 +308,31 @@ function findNotificationUrl(argv: ReadonlyArray<string>): string | undefined {
 }
 
 function installShellUnichatIpc(): void {
+  const requireShellSender = (senderId: number): void => {
+    if (senderId !== shellWindow?.webContents.id) {
+      throw new Error('Untrusted Signal shell request');
+    }
+  };
+
   // invoke/handle 用于 React 挂载后的“读取当前快照”。即使协议事件早于
   // React listener 注册，管理壳仍能通过这个接口补读到最新状态。
   ipcMain.handle('uni:shell:get-unichat-context', event => {
-    if (event.sender.id !== shellWindow?.webContents.id) {
-      throw new Error('Untrusted unichat context request');
-    }
+    requireShellSender(event.sender.id);
     return unichatContext.snapshot;
+  });
+
+  ipcMain.handle('uni:shell:open-download', async (event, channel) => {
+    requireShellSender(event.sender.id);
+    if (channel !== 'lanzou' && channel !== 'aws') {
+      throw new Error('Unknown Signal download channel');
+    }
+
+    const downloadUrl = getSignalDownloadUrl(
+      channel,
+      process.platform,
+      unichatContext.snapshot.brand
+    );
+    await electronShell.openExternal(downloadUrl);
   });
 
   // EventEmitter -> webContents.send 用于“推送后续快照”。例如主程序已运行时，
@@ -303,6 +346,29 @@ function installShellUnichatIpc(): void {
       );
     }
   });
+}
+
+function getSignalDownloadUrl(
+  channel: 'lanzou' | 'aws',
+  platform: NodeJS.Platform,
+  brand: string
+): string {
+  if (platform !== 'darwin' && platform !== 'win32') {
+    throw new Error(`Signal download is not available on ${platform}`);
+  }
+
+  if (channel === 'lanzou') {
+    return platform === 'darwin'
+      ? 'https://unichat.lanzn.com/s/newsignalmac'
+      : 'https://unichat.lanzn.com/s/newsignalwin';
+  }
+
+  // brand 来自 unisignal://open?...&brand=...。URL 编码后再放入文件名，
+  // 防止空格、中文或路径分隔符破坏固定的 S3 下载地址。
+  const encodedBrand = encodeURIComponent(brand.trim() || 'Unichat');
+  return platform === 'darwin'
+    ? `https://unichat-app-updates.s3.ap-southeast-1.amazonaws.com/signal/mac/download-m-${encodedBrand}.html`
+    : `https://unichat-app-updates.s3.ap-southeast-1.amazonaws.com/signal/win/download-w-${encodedBrand}.html`;
 }
 
 function getShellWindowTitle(

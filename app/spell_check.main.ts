@@ -1,7 +1,7 @@
 // Copyright 2020 Signal Messenger, LLC
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import type { BrowserWindow } from 'electron';
+import type { BrowserWindow, WebContents } from 'electron';
 import { Menu, clipboard, nativeImage } from 'electron';
 import * as LocaleMatcher from '@formatjs/intl-localematcher';
 
@@ -12,7 +12,6 @@ import type { LocalizerType } from '../ts/types/Util.std.ts';
 import { strictAssert } from '../ts/util/assert.std.ts';
 import type { LoggerType } from '../ts/types/Logging.std.ts';
 import { createLogger } from '../ts/logging/log.std.ts';
-import { handleAttachmentRequest } from './attachment_channel.main.ts';
 
 const log = createLogger('spell_check');
 
@@ -63,7 +62,32 @@ export const setup = (
   i18n: LocalizerType,
   logger: LoggerType
 ): void => {
-  const { session } = browserWindow.webContents;
+  setupWebContents(
+    browserWindow.webContents,
+    browserWindow,
+    preferredSystemLocales,
+    localeOverride,
+    i18n,
+    logger
+  );
+};
+
+/**
+ * Install Signal's spellcheck/context menu on an arbitrary WebContents.
+ *
+ * The stock app only has a BrowserWindow, while the Profile shell renders each
+ * Signal account in a WebContentsView. Keeping the popup owner separate lets
+ * both window types share the same context-menu implementation.
+ */
+export const setupWebContents = (
+  webContents: WebContents,
+  popupWindow: BrowserWindow,
+  preferredSystemLocales: ReadonlyArray<string>,
+  localeOverride: string | null,
+  i18n: LocalizerType,
+  logger: LoggerType
+): void => {
+  const { session } = webContents;
 
   session.on('spellcheck-dictionary-download-begin', (_event, lang) => {
     logger.info('spellcheck: dictionary download begin:', lang);
@@ -92,7 +116,7 @@ export const setup = (
   log.info('spellcheck: setting languages to:', languages);
   session.setSpellCheckerLanguages(languages);
 
-  browserWindow.webContents.on('context-menu', (_event, params) => {
+  webContents.on('context-menu', (_event, params) => {
     const { editFlags } = params;
     const isMisspelled = Boolean(params.misspelledWord);
     const isLink = Boolean(params.linkURL);
@@ -115,7 +139,7 @@ export const setup = (
             ...params.dictionarySuggestions.map(label => ({
               label,
               click: () => {
-                browserWindow.webContents.replaceMisspelling(label);
+                webContents.replaceMisspelling(label);
               },
             }))
           );
@@ -167,12 +191,11 @@ export const setup = (
               return;
             }
 
-            const req = new Request(parsedSrcUrl, {
-              method: 'GET',
-            });
-
             try {
-              const res = await handleAttachmentRequest(req);
+              // Fetch through the originating Profile's session. Its
+              // attachment:// handler is bound to that Profile's directory,
+              // so copying an image cannot read another account's files.
+              const res = await session.fetch(parsedSrcUrl.href);
               if (!res.ok) {
                 return;
               }
@@ -227,7 +250,7 @@ export const setup = (
 
       const menu = Menu.buildFromTemplate(template);
       menu.popup({
-        window: browserWindow,
+        window: popupWindow,
         frame: params.frame ?? undefined,
       });
     }

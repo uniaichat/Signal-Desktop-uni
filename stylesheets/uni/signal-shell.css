@@ -112,6 +112,45 @@ button {
   padding: 6px;
 }
 
+.SignalShell__downloads {
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border-block-start: 1px solid rgb(0 0 0 / 8%);
+}
+
+.SignalShell__downloadsTitle {
+  color: #777;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.SignalShell__downloadButton {
+  min-height: 34px;
+  border: 0;
+  border-radius: 8px;
+  padding: 7px 10px;
+  background: #2c6bed;
+  color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.SignalShell__downloadButton:hover {
+  background: #245ac7;
+}
+
+.SignalShell__downloadButton--secondary {
+  border: 1px solid #2c6bed;
+  background: transparent;
+  color: #2c6bed;
+}
+
+.SignalShell__downloadButton--secondary:hover {
+  background: rgb(44 107 237 / 10%);
+}
+
 .SignalShell__profile {
   display: flex;
   min-height: 46px;

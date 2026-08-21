@@ -348,6 +348,18 @@ function SignalShell(): ReactElement {
     dataTransfer.dropEffect = 'move';
   }, []);
 
+  const openDownload = useCallback(
+    async (channel: 'lanzou' | 'aws'): Promise<void> => {
+      try {
+        setErrorMessage(undefined);
+        await window.SignalShell.openDownload(channel);
+      } catch (error) {
+        setErrorMessage(toErrorMessage(error));
+      }
+    },
+    []
+  );
+
   return (
     <div className="SignalShell">
       <aside
@@ -484,6 +496,24 @@ function SignalShell(): ReactElement {
             );
           })}
         </nav>
+
+        <section aria-label="软件下载" className="SignalShell__downloads">
+          <div className="SignalShell__downloadsTitle">软件更新下载</div>
+          <button
+            className="SignalShell__downloadButton"
+            onClick={() => void openDownload('aws')}
+            type="button"
+          >
+            亚马逊通道下载
+          </button>
+          <button
+            className="SignalShell__downloadButton SignalShell__downloadButton--secondary"
+            onClick={() => void openDownload('lanzou')}
+            type="button"
+          >
+            蓝奏云通道下载
+          </button>
+        </section>
 
         {errorMessage ? (
           <div className="SignalShell__error" role="alert">

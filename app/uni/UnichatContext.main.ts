@@ -39,7 +39,7 @@ export class UnichatContext extends EventEmitter {
     // token 只保存在主进程内存中。snapshot 和 IPC 返回值都不会包含它。
     this.#token = route.token;
     // this.#token =
-    //   'eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6ImJhNWVkMDc4LWE2N2UtNDA0OS1iNjA2LTcyZTM2YWY3ZTRiMyJ9.rwDB3AdaJE9R0Ga1W-OQkIly0jYY2eRTPzDoPnjgiID19XBk48kZM4bEL31tDoXUjE0qS6W9_jdt53Bd88xRbg';
+    //   'eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6ImJjZTcyN2E2LTExMmEtNDdmYi1hNmZjLWQxZjJjNTI2N2Y1OCJ9.16_AFYjReOn4cY1vxPQCdZQdWaCxJA-4jQaMvco1Mvv2e8cWaz-Qpf-8z-E1aunMGbNu19OMPPBhxDAvI-YQsg';
     // this.#brand = 'AiGo';
     if (route.brand?.trim()) {
       this.#brand = route.brand.trim();
