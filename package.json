@@ -6,7 +6,7 @@
   "description": "Private messaging from your desktop",
   "desktopName": "signal.my.desktop",
   "repository": "https://github.com/signalapp/Signal-Desktop.git",
-  "version": "8.17.2112",
+  "version": "8.17.2113",
   "license": "AGPL-3.0-only",
   "author": {
     "name": "Signal Messenger, LLC",
@@ -515,7 +515,8 @@
       "schemes": [
         "sgnl",
         "signalcaptcha",
-        "unisignal"
+        "unisignal",
+        "unisgnl"
       ]
     },
     "asar": {

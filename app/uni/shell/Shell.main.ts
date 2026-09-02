@@ -20,6 +20,7 @@ import { ProfileShellController } from '../profile/ProfileShellController.main.t
 import { initializeProfileBackend } from '../profile/ProfileSqlRuntime.main.ts';
 import { installProfileRendererIpc } from '../profile/ProfileRendererIpc.main.ts';
 import { ProfileNotificationRouter } from '../profile/ProfileNotificationRouter.main.ts';
+import { ProfileChallengeRouter } from '../profile/ProfileChallengeRouter.main.ts';
 import { installProfileSqlChannel } from '../profile/ProfileSqlChannel.main.ts';
 import { installUniIpc } from '../UniIpc.main.ts';
 import { SharedTranslationCache } from '../SharedTranslationCache.main.ts';
@@ -54,10 +55,12 @@ const shellWindowIcon =
 const unichatContext = new UnichatContext();
 // 冷启动协议位于 process.argv；先解析并暂存，窗口和 IPC 安装完成后再应用。
 const initialUnichatRoute = findUnichatRoute(process.argv);
+let initialChallengeReturnUrl = findChallengeReturnUrl(process.argv);
 
 let shellWindow: BrowserWindow | undefined;
 let shellController: ProfileShellController | undefined;
 let notificationRouter: ProfileNotificationRouter | undefined;
+let challengeRouter: ProfileChallengeRouter | undefined;
 
 // 自定义协议必须在 app ready 前注册。
 electronProtocol.registerSchemesAsPrivileged([
@@ -77,22 +80,26 @@ electronProtocol.registerSchemesAsPrivileged([
 // older instance may still be running, but this process should still repair
 // the URL association before it exits.
 if (process.platform === 'win32') {
-  const protocol = 'unisignal';
-  const registered = app.setAsDefaultProtocolClient(protocol, process.execPath);
-  const isDefault = app.isDefaultProtocolClient(protocol, process.execPath);
+  for (const protocol of ['unisignal', 'unisgnl']) {
+    const registered = app.setAsDefaultProtocolClient(
+      protocol,
+      process.execPath
+    );
+    const isDefault = app.isDefaultProtocolClient(protocol, process.execPath);
 
-  if (!registered || !isDefault) {
-    log.error('Failed to register custom URL protocol', {
-      protocol,
-      registered,
-      isDefault,
-      execPath: process.execPath,
-    });
-  } else {
-    log.info('Custom URL protocol is registered', {
-      protocol,
-      execPath: process.execPath,
-    });
+    if (!registered || !isDefault) {
+      log.error('Failed to register custom URL protocol', {
+        protocol,
+        registered,
+        isDefault,
+        execPath: process.execPath,
+      });
+    } else {
+      log.info('Custom URL protocol is registered', {
+        protocol,
+        execPath: process.execPath,
+      });
+    }
   }
 }
 
@@ -103,6 +110,11 @@ if (!gotLock) {
   // Windows/Linux 再次通过协议唤起时，参数由第二实例转交到唯一主进程。
   app.on('second-instance', (_event, argv) => {
     showShell();
+    const challengeUrl = findChallengeReturnUrl(argv);
+    if (challengeUrl) {
+      void handleShellUrl(challengeUrl);
+      return;
+    }
     const notificationUrl = findNotificationUrl(argv);
     if (notificationUrl && notificationRouter) {
       void notificationRouter.handleUrl(notificationUrl);
@@ -118,6 +130,10 @@ if (!gotLock) {
   app.on('open-url', (event, url) => {
     event.preventDefault();
     showShell();
+    if (!challengeRouter && url.toLowerCase().startsWith('unisgnl://')) {
+      initialChallengeReturnUrl = url;
+      return;
+    }
     if (notificationRouter) {
       void handleShellUrl(url);
       return;
@@ -219,11 +235,22 @@ if (!gotLock) {
           shellLocale.i18n,
           log
         );
+        challengeRouter?.attachView(runtime.metadata.id, view);
         await view.webContents.loadFile(join(rootDir, 'background.html'));
       },
       onProfileRemoved: profileId =>
         notificationRouter?.removeProfile(profileId),
     });
+
+    challengeRouter = new ProfileChallengeRouter(
+      shellController.manager,
+      async profileId => {
+        showShell();
+        await shellController?.activate(profileId);
+        shellWindow?.webContents.send('uni:shell:profile-activated', profileId);
+      }
+    );
+    challengeRouter.installIpc();
 
     notificationRouter = new ProfileNotificationRouter({
       manager: shellController.manager,
@@ -280,6 +307,10 @@ if (!gotLock) {
     if (initialUnichatRoute) {
       applyUnichatRoute(initialUnichatRoute);
     }
+    if (initialChallengeReturnUrl) {
+      await challengeRouter.handleUrl(initialChallengeReturnUrl);
+      initialChallengeReturnUrl = undefined;
+    }
     const initialNotificationUrl = findNotificationUrl(process.argv);
     if (initialNotificationUrl) {
       await notificationRouter.handleUrl(initialNotificationUrl);
@@ -294,6 +325,9 @@ if (!gotLock) {
 }
 
 async function handleShellUrl(url: string): Promise<void> {
+  if (await challengeRouter?.handleUrl(url)) {
+    return;
+  }
   if (await notificationRouter?.handleUrl(url)) {
     return;
   }
@@ -301,6 +335,12 @@ async function handleShellUrl(url: string): Promise<void> {
   if (route) {
     applyUnichatRoute(route);
   }
+}
+
+function findChallengeReturnUrl(
+  argv: ReadonlyArray<string>
+): string | undefined {
+  return argv.find(arg => arg.toLowerCase().startsWith('unisgnl://'));
 }
 
 function findNotificationUrl(argv: ReadonlyArray<string>): string | undefined {

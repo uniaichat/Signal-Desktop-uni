@@ -19,8 +19,14 @@ export const SmartCaptchaDialog = memo(function SmartCaptchaDialog({
 }: SmartCaptchaDialogProps) {
   const i18n = useSelector(getIntl);
   const isPending = useSelector(isChallengePending);
-  const handleContinue = useCallback(() => {
-    const url = getChallengeURL('chat');
+  const handleContinue = useCallback(async () => {
+    let url = getChallengeURL('chat');
+    const config = await window.uniIpc?.getConfig?.();
+    if (config?.windowId) {
+      const challengeUrl = new URL(url);
+      challengeUrl.searchParams.set('windowId', String(config.windowId));
+      url = `unisignalopen://${encodeURIComponent(challengeUrl.href)}`;
+    }
     log.info(`navigating to ${url}`);
     document.location.href = url;
   }, []);
